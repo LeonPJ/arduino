@@ -1,56 +1,136 @@
-/*
- * IRRemote 紅外線遙控教學
- *   範例 1.2: 顯示紅外線協定種類，如 NEC, Sony SIRC, Philips RC5, Philips RC6 等協定
- */
-#include <IRremote.h>                    // 引用 IRRemote 函式庫
+#include "I2Cdev.h"
+#include "MPU6050.h"
+#include "HMC5883L.h"
+#include "BMP085.h"
+#include "Wire.h"
 
-const int irReceiverPin = 2;             // 紅外線接收器 OUTPUT 訊號接在 pin 2      need digital pin
+static const char LED = 6;
+static const float ACCEL_SENS = 16384.0; // Accel Sensitivity with default +/- 2g scale
+static const float GYRO_SENS  = 131.0;   // Gyro Sensitivity with default +/- 250 deg/s scale
 
-IRrecv irrecv(irReceiverPin);            // 定義 IRrecv 物件來接收紅外線訊號
-decode_results results;                  // 解碼結果將放在 decode_results 結構的 result 變數裏
+// Magnetometer class default I2C address is 0x1E
+// specific I2C addresses may be passed as a parameter here
+// this device only supports one I2C address (0x1E)
+HMC5883L mag;
+int16_t mx, my, mz;
+
+// Accel/Gyro class default I2C address is 0x68 (can be 0x69 if AD0 is high)
+// specific I2C addresses may be passed as a parameter here
+MPU6050 accelgyro;
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
+// Barometer class default I2C address is 0x77
+// specific I2C addresses may be passed as a parameter here
+// (though the BMP085 supports only one address)
+BMP085 barometer;
+
+float temperature;
+float pressure;
+int32_t lastMicros;
 
 void setup()
 {
-  Serial.begin(115200);                     // 開啟 Serial port, 通訊速率為 115200 bps
-  irrecv.enableIRIn();                   // 啟動紅外線解碼
-}
-
-// 顯示紅外線協定種類
-void showIRProtocol(decode_results *results) 
-{
-  Serial.print("Protocol: ");
+  boolean state = HIGH;
+  unsigned int count = 0;
   
-  // 判斷紅外線協定種類
-  switch(results->decode_type) {
-   case NEC:
-     Serial.print("NEC");
-     break;
-   case SONY:
-     Serial.print("SONY");
-     break;
-   case RC5:
-     Serial.print("RC5");
-     break;
-   case RC6:
-     Serial.print("RC6");
-     break;
-   default:
-     Serial.print("Unknown encoding");  
-  }  
+  pinMode(LED, OUTPUT);
+  
+  Serial.begin(9600);
+  while (!Serial && (count < 30) )
+  {
+    delay(200); // Wait for serial port to connect with timeout. Needed for native USB
+    digitalWrite(LED, state);
+    state = !state;
+    count++;
+  }
 
-  // 把紅外線編碼印到 Serial port
-  Serial.print(", irCode: ");            
-  Serial.print(results->value, HEX);    // 紅外線編碼
-  Serial.print(",  bits: ");           
-  Serial.println(results->bits);        // 紅外線編碼位元數    
+  digitalWrite(LED, HIGH);
+
+  // join I2C bus (I2Cdev library doesn't do this automatically)
+  Wire.begin();
+
+  // ==================== MPU6050 ============================
+  accelgyro.initialize();
+  Serial.print("Testing Accel/Gyro... ");
+  Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
+
+  // Starts up with accel +/- 2 g and gyro +/- 250 deg/s scale
+  accelgyro.setI2CBypassEnabled(true); // set bypass mode
+  // Now we can talk to the HMC5883l
+
+  // ==================== HMC5883L ============================
+  mag.initialize();
+  Serial.print("Testing Mag...  ");
+  Serial.println(mag.testConnection() ? "HMC5883L connection successful" : "HMC5883L connection failed");
+
+  // ==================== BMP085 ============================
+  barometer.initialize();
+  Serial.print("Testing Pressure...  ");
+  Serial.println(barometer.testConnection() ? "BMP085 connection successful" : "BMP085 connection failed");
+
+  Serial.println("Setup Complete");
 }
 
-void loop() 
+void loop()
 {
-  if (irrecv.decode(&results)) {         // 解碼成功，收到一組紅外線訊號
-    showIRProtocol(&results);            // 顯示紅外線協定種類
-    irrecv.resume();                     // 繼續收下一組紅外線訊號        
-  }  
+  static unsigned long ms = 0;
+  static boolean state = HIGH;
+
+  // Serial Output Format
+  // === Accel === | === Gyro (角加速度)=== | ========================= Mag =====================| === Barometer === |
+  //   X   Y   Z   |     X       Y      Z   |  X   Y   Z  Heading((azimuth/yaw)   （方位/偏航）) |  Temp   Pressure  |
+
+  if (millis() - ms > 100)
+  {
+    // read raw accel/gyro measurements
+    accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+    // display tab-separated accel/gyro x/y/z values
+    Serial.print(ax/ACCEL_SENS); Serial.print("\t");
+    Serial.print(ay/ACCEL_SENS); Serial.print("\t");
+    Serial.print(az/ACCEL_SENS); Serial.print("\t");
+    Serial.print(gx/GYRO_SENS); Serial.print("\t");
+    Serial.print(gy/GYRO_SENS); Serial.print("\t");
+    Serial.print(gz/GYRO_SENS); Serial.print("\t");
+
+    // read raw heading measurements
+    mag.getHeading(&mx, &my, &mz);
+
+    // display tab-separated mag x/y/z values
+    Serial.print(mx); Serial.print("\t");
+    Serial.print(my); Serial.print("\t");
+    Serial.print(mz); Serial.print("\t");
+    
+    // To calculate heading in degrees. 0 degree indicates North
+    float heading = atan2(my, mx);
+    if(heading < 0) heading += 2 * M_PI;
+    Serial.print(heading * 180/M_PI); Serial.print("\t");
+
+    // request temperature
+    barometer.setControl(BMP085_MODE_TEMPERATURE);
+    
+    // wait appropriate time for conversion (4.5ms delay)
+    lastMicros = micros();
+    while (micros() - lastMicros < barometer.getMeasureDelayMicroseconds());
+
+    // read calibrated temperature value in degrees Celsius
+    temperature = barometer.getTemperatureC();
+
+    // request pressure (3x oversampling mode, high detail, 23.5ms delay)
+    barometer.setControl(BMP085_MODE_PRESSURE_3);
+    while (micros() - lastMicros < barometer.getMeasureDelayMicroseconds());
+
+    // read calibrated pressure value in Pascals (Pa)
+    pressure = barometer.getPressure();
+
+    // display measured values if appropriate
+    Serial.print(temperature); Serial.print("\t");
+    Serial.print(pressure/100); Serial.println("\t");
+
+    ms = millis();
+    digitalWrite(LED, state);
+    state = !state;
+  }
 }
-
-
