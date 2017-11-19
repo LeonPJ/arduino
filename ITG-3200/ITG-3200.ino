@@ -31,11 +31,11 @@ char itgAddress = 0x69;
 //In the setup section of the sketch the serial port will be configured, the i2c communication will be initialized, and the itg-3200 will be configured.
 void setup()
 {
-  //Create a serial connection using a 115200bps baud rate.
-  Serial.begin(115200);
+  //Create a serial connection using a 9600bps baud rate.
+  Serial.begin(9600);
 
   //Initialize the I2C communication. This will set the Arduino up as the 'Master' device.
-  Wire.begin();
+  Wire.begin();// join I2C bus as a slave with address
 
   //Read the WHO_AM_I register and print the result
   char id=0; 
@@ -75,13 +75,13 @@ void loop()
 void itgWrite(char address, char registerAddress, char data)
 {
   //Initiate a communication sequence with the desired i2c device
-  Wire.beginTransmission(address);
+  Wire.beginTransmission(address);//開始對 <address> 的連線
   //Tell the I2C address which register we are writing to
-  Wire.write(registerAddress);
+  Wire.write(registerAddress);//
   //Send the value to write to the specified register
   Wire.write(data);
   //End the communication sequence
-  Wire.endTransmission();
+  Wire.endTransmission();//關閉之前的連線
 }
 
 //This function will read the data from a specified register on the ITG-3200 and return the value.

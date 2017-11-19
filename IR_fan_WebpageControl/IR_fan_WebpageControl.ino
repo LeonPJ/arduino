@@ -4,8 +4,8 @@ IRsend irsend;
 #define DEBUG true
 
 SoftwareSerial esp8266(7,8); //(RX,TX)
-String ssid="TP-LINK_37128";
-String pwd="11111111";
+String ssid="MDFK";
+String pwd="135791113";
 
 void setup() {
   Serial.begin(9600);

@@ -1,0 +1,44 @@
+IRremote.h
+from:
+  #define DECODE_SHARP         0 // NOT WRITTEN
+to:
+  #define DECODE_SHARP         1
+
+from:
+  bool  decodeSharp (decode_results *results) ; // NOT WRITTEN
+to:
+  bool  decodeSharp (decode_results *results) ;
+
+
+IRremoteInt.h
+from:
+  #define RAWBUF  101  // Maximum length of raw duration buffer
+to:
+  #define RAWBUF  255  // Maximum length of raw duration buffer
+
+
+irRecv.cpp
+from:
+  pinMode(irparams.recvpin, INPUT);
+to:
+  pinMode(irparams.recvpin, INPUT_PULLUP);
+
+add following lines before #if DECODE_SONY
+  #if DECODE_SHARP
+          DBG_PRINTLN("Attempting SHARP decode");
+          if (decodeSharp(results))  return true ;
+  #endif
+
+
+ir_Sony.cpp
+from:
+  #define SONY_DOUBLE_SPACE_USECS    500
+to:
+  #define SONY_DOUBLE_SPACE_USECS    200
+
+
+ir_Sharp.cpp
+Send sharp ir stream in burst of 2
+Add decodder
+Modified version is attached in this RAR file.
+Overwrite the original ir_Sharp.cpp with ir_Sharp.cpp.new.

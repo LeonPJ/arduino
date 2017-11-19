@@ -4,8 +4,8 @@
 #define _txpin      5
 SoftwareSerial debug( _rxpin, _txpin ); // RX, TX
 //*-- IoT Information
-#define SSID "?"//路由器名稱
-#define PASS "?"//路由器密碼
+#define SSID "MDKF"//路由器名稱
+#define PASS "135791113"//路由器密碼
 #define IP "184.106.153.149" // ThingSpeak IP Address: 184.106.153.149
 // 使用 GET 傳送資料的格式
 // GET /update?key=[THINGSPEAK_KEY]&field1=[data 1]&filed2=[data 2]...;

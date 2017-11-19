@@ -1,16 +1,14 @@
-#define Aout A0 //MQ-135 AO 接 Arduino Nano A0  
+#define Aout A0//MQ-135 AO 接 Arduino Nano A0  
   
-int temp = 0; //存取A0讀取的數據
+int temp = 0;//宣告temp為0
   
-void setup() {  
-  // put your setup code here, to run once:  
-  Serial.begin(9600);//Baud
+void setup() {//啟用或reset時觸發  
+  Serial.begin(9600);//設定baud為9600
   pinMode(Aout, INPUT);//定義A0為輸出
 }  
   
-void loop() {  
-  // put your main code here, to run repeatedly:  
-  temp = analogRead(Aout); //讀取A0的模擬數據
-  Serial.println(temp); //輸出temp的數據 
-  delay(500);  //延遲0.5s  
+void loop() {//啟動後持續進行迴圈
+  temp = analogRead(Aout);//讀取analogRead(Aout)值存為temp
+  Serial.println(temp);//輸出temp的數據 
+  delay(500);//延遲0.5s
 }  

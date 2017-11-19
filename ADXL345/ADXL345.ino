@@ -5,7 +5,7 @@ int X0, X1, Y0, Y1, Z1, Z0;
 float X,Y,Z;
 
 void setup(){
-    Serial.begin(115200);
+    Serial.begin(9600);
     Serial.println("Start : \n------------------------------------");
     Wire.begin();  //初始化 I2C
     setReg(0x2D, 0xA); // (打開電源, 設定輸出資料速度為 100 Hz)  
@@ -39,10 +39,10 @@ void loop(){
  *     data → 要寫入的資料
  */
 void setReg(int reg, int data){
-    Wire.beginTransmission(I2C_Address);
+    Wire.beginTransmission(I2C_Address);//開始對 <address> 的連線
     Wire.write(reg); // 指定佔存器
     Wire.write(data); // 寫入資料
-    Wire.endTransmission();
+    Wire.endTransmission();// 關閉之前的連線
 }
 
 /* getData(reg)：取得佔存器裡的資料
@@ -52,9 +52,9 @@ int getData(int reg){
     Wire.beginTransmission(I2C_Address);
     Wire.write(reg);
     Wire.endTransmission();    
-    Wire.requestFrom(I2C_Address,1);
+    Wire.requestFrom(I2C_Address,1);//在線上向拍定地址發出回傳 <len> bytes 資料的請求
     
-    if(Wire.available()<=1){
+    if(Wire.available()<=1){//檢查連線上是否有可接收的資料
         return Wire.read();
     }
     
