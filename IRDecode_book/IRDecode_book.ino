@@ -1,6 +1,6 @@
 #include <IRremote.h>
 
-int RECV_PIN = 11;
+int RECV_PIN = 11;//data角
 
 IRrecv irrecv(RECV_PIN);
 
