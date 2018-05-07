@@ -67,6 +67,10 @@ void loop() {
       case 5:
         irsend.sendNEC(0x807F3BC4, 32);
         break;
+
+      case 6:
+        irsend.sendNEC(0x807FFB04, 32);//fan type
+        break;
         
       default:
         Serial.println("錯誤輸入");
