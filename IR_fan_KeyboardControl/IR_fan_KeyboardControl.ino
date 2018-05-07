@@ -46,6 +46,11 @@ void loop()
         irsend.sendNEC(0x807F3BC4, 32);
         break;
 
+      case 116://control fan type enter 't'
+        Serial.println("風類轉換");
+        irsend.sendNEC(0x807FFB04, 32);//fan type decode
+        break;
+
       case 10://new line ASCII
         break;
 
