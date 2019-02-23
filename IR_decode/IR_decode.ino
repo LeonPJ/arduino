@@ -1,6 +1,6 @@
 #include <IRremote.h>                    // 引用 IRRemote 函式庫
 
-const int irReceiverPin = 2;             // 紅外線接收器 OUTPUT 訊號接在 D2(nano)
+const int irReceiverPin = 13;             // 紅外線接收器 OUTPUT 訊號接在 D2(nano)
 IRrecv irrecv(irReceiverPin);            // 定義 IRrecv 物件來接收紅外線訊號
 decode_results results;                  // 解碼結果將放在 decode_results 結構的 result 變數裏
 

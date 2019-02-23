@@ -1,5 +1,5 @@
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(4, 5); // Arduino RX:4, TX:5  
+SoftwareSerial mySerial(7, 8); // Arduino RX:4, TX:5  
 void setup()
 {
   // Open serial communications and wait for port to open:

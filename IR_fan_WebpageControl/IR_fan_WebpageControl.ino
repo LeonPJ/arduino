@@ -10,13 +10,11 @@ String pwd="135791113";
 void setup() {
   Serial.begin(9600);
   esp8266.begin(9600);
-//--------------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------------
-  sendData("AT+RST\r\n",2000,DEBUG); // reset ESP8266
+  sendData("AT+RST\r\n",1000,DEBUG); // reset ESP8266
   sendData("AT+CWMODE=1\r\n",1000,DEBUG); //configure as station
   sendData("AT+CIPMUX=1\r\n",1000,DEBUG); //enable multiple connections
-  sendData("AT+CIPSERVER=1,80\r\n",2000,DEBUG); //turn on server 80 port     
+  sendData("AT+CIPSERVER=1,80\r\n",1000,DEBUG); //turn on server 80 port     
+  
   while (!connectWifi(ssid, pwd)) {
     Serial.println("Connecting WiFi ... failed");
     delay(2000);
@@ -92,11 +90,11 @@ void loop() {
         Serial.print("=");
         Serial.println(val);
         String webpage="<html>"; 
-        webpage += (String)digitalRequests + " digital pin(s) written<br>";
-        webpage += (String)analogRequests + " analog pin(s) written<br><br>";
-        for (byte i=0; i<6; i++) {
-          webpage += "A" + (String)i + "=" + (String)analogRead(i) + "<br>";
-          }
+        webpage += "CONNECT SUSSES";
+        //webpage += (String)analogRequests + " analog pin(s) written<br><br>";
+        //for (byte i=0; i<6; i++) {
+          //webpage += "A" + (String)i + "=" + (String)analogRead(i) + "<br>";
+          //}
         webpage += "</html>";
         String cipSend="AT+CIPSEND=";
         cipSend += connectionId;
@@ -104,7 +102,7 @@ void loop() {
         cipSend += webpage.length();
         cipSend += "\r\n";
         sendData(cipSend,1000,DEBUG);
-        sendData(webpage,2000,DEBUG);
+        sendData(webpage,1000,DEBUG);
         sendData("AT+CIPCLOSE=" + (String)connectionId + "\r\n",3000,DEBUG);
         }
       }
@@ -128,4 +126,3 @@ String sendData(String command, const int timeout, boolean debug) {
   if (debug) {Serial.print(res);}
   return res;
   }
-

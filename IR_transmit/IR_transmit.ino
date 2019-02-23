@@ -22,7 +22,7 @@ void loop()
   if (Serial.read() != -1)
   {    
     // 發射紅外線訊號
-    irsend.sendNEC(0xFEAC02E5,32);   // 紅外線編碼
+    irsend.sendNEC(0x807FFB04,32);   // 紅外線編碼
     //irsend.sendRaw(rawData, 67, 38);
   }
 }

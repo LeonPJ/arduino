@@ -1,15 +1,15 @@
 #include <SoftwareSerial.h>
-#define _baudrate   9600
+#define _baudrate   115200
 #define _rxpin      4
 #define _txpin      5
 SoftwareSerial debug( _rxpin, _txpin ); // RX, TX
-//*-- IoT Information
-#define SSID "MDKF"//路由器名稱
-#define PASS "135791113"//路由器密碼
+//*-- IoT Information 
+#define SSID "Green-7730"
+#define PASS "135791113"
 #define IP "184.106.153.149" // ThingSpeak IP Address: 184.106.153.149
 // 使用 GET 傳送資料的格式
 // GET /update?key=[THINGSPEAK_KEY]&field1=[data 1]&filed2=[data 2]...;
-String GET = "GET /update?key=?";
+String GET = "GET /update?key=YL9F9YVYNSG8DBX3";
 
 void setup() {
     Serial.begin( _baudrate );
@@ -20,7 +20,7 @@ void setup() {
 }
 void loop() {
     delay(5000);   // 60 second
-    SentOnCloud( String(5), String(9) );
+    SentOnCloud( String(100), String(100) );
 }
 boolean connectWiFi()
 {
@@ -40,7 +40,7 @@ void SentOnCloud( String T, String H )
         Serial.print( "RECEIVED: Error\nExit1" );
         return;
     }
-    cmd = GET + "&field1=" + T + "&field2=" + H +"\r\n";
+    cmd = GET + "&field1=" + "[" + T + "]" + "&field2=" + "[" + H + "]" +"\r\n";
     debug.print( "AT+CIPSEND=" );
     debug.println( cmd.length() );
     if(debug.find( ">" ) )
