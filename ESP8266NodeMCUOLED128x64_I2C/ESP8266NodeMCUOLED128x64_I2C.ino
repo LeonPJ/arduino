@@ -12,22 +12,18 @@ Adafruit_SSD1306 display(OLED_RESET);
 
 void setup() {
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-
-  // Clear the buffer.
   display.clearDisplay();
   display.display();
+}
 
+void loop() {
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(0,0);
   display.println("Hello World 1");
-  display.setCursor(20,20);
+  display.setCursor(10,20);
   display.println("Hello World 2");
+  display.setCursor(20,30);
+  display.println("Hello World 3");
   display.display();
-
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
 }
