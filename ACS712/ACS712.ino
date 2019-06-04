@@ -16,7 +16,7 @@ void loop(){
  
  
  Voltage = getVPP();
- VRMS = (Voltage/2.0) *0.707; 
+ VRMS = (Voltage/2.0) * 0.707; 
  AmpsRMS = (VRMS * 1000)/mVperAmp;
  Serial.print(AmpsRMS);
  Serial.println(" Amps RMS");
@@ -29,7 +29,7 @@ float getVPP()
   
   int readValue;             //value read from the sensor
   int maxValue = 0;          // store max value here
-  int minValue = 1024;          // store min value here
+  int minValue = 1023;          // store min value here
   
    uint32_t start_time = millis();
    while((millis()-start_time) < 1000) //sample for 1 Sec
