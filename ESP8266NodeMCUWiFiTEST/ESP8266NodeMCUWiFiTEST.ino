@@ -1,6 +1,6 @@
 #include <ESP8266WiFi.h>
  
-const char* ssid = "Green-7730";
+const char* ssid = "dlink-7730";
 const char* password = "135791113";
  
 int ledPin = LED_BUILTIN;

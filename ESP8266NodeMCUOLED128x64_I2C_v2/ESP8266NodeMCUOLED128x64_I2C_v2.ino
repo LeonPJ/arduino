@@ -10,14 +10,14 @@
 OLED display(4, 5);
 
 void setup() {
-  Serial.begin(9600);
-  Serial.println("OLED test!");
+  //Serial.begin(9600);
+  //Serial.println("OLED test!");
 
   // Initialize display
   display.begin();
 
   // Test message
-  display.print("Hello World");
+  /*display.print("Hello World");
   delay(3*1000);
 
   // Test long message
@@ -41,19 +41,19 @@ void setup() {
 
   // Test display ON
   display.on();
-  delay(3*1000);
+  delay(3*1000);*/
 }
 
 int r = 0, c = 0;
 
 void loop() {
-  r = r % 8;
+  /*r = r % 8;
   c = micros() % 6;
 
-  if (r == 0)
+  if (r == 0)*/
     display.clear();
 
-  display.print("Hello World", r++, c++);
-
+  display.print("Hello World11", 1, 1);
+  display.print("Hello World22", 2, 2);
   delay(500);
 }
