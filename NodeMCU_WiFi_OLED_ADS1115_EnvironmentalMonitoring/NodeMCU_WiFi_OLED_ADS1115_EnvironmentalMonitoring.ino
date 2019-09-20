@@ -6,7 +6,7 @@
 #include <TimeAlarms.h>
 //ADS1115 library
 #include <Wire.h>
-#include <ADS1115.h>
+#include <Adafruit_ADS1015.h>
 //DHT22 library
 #include <DHT.h>
 //SSD1306 library
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------------------------------------------------------------------------------
 /*set*/
 // set ADS1115
-ADS1115 ads;
+Adafruit_ADS1115 ads(0x48);  /* Use this for the 16-bit version */
 // SET DHT
 #define DHTPIN D6
 #define DHTTYPE DHT22
@@ -40,7 +40,7 @@ WiFiUDP udp;  //UDP instance to let us send and receive packets over UDP
 #define OLEDDataY 24// 顯示OLED數據 Y軸
 #define FlamePin D5
 // MQ9 inf
-#define MQ9_PIN (ads.Measure_SingleEnded(0))// define which analog input channel you are going to use ads1115 -> ads.readADC_SingleEnded(0)
+#define MQ9_PIN (ads.readADC_SingleEnded(0))// define which analog input channel you are going to use ads1115 -> ads.readADC_SingleEnded(0)
 #define RL_VALUE (5)// define the load resistance on the board, in kilo ohms
 #define RO_CLEAN_AIR_FACTOR (9.83)// RO_CLEAR_AIR_FACTOR=(Sensor resistance in clean air)/RO, which is derived from the chart in datasheet
 #define CALIBARAION_SAMPLE_TIMES (5)//define how many samples you are going to take in the calibration phase
@@ -56,13 +56,13 @@ float COCurve[3] = {2.3,0.23,-0.49};
 float SmokeCurve[3] = {2.3,0.53,-0.44};
 float Ro9 = 10;// Ro9 is initialized to 10 kilo ohms
 //MG811 inf
-#define MG811_PIN (ads.Measure_SingleEnded(1))
+#define MG811_PIN (ads.readADC_SingleEnded(1))
 #define BOOL_PIN (2)
-#define DC_GAIN (6)   //define the DC gain of amplifier 8.5
+#define DC_GAIN (8.5)   //define the DC gain of amplifier 8.5
 #define READ_SAMPLE_INTERVAL (50)    //define how many samples you are going to take in normal operation
-#define READ_SAMPLE_TIMES (5)     //define the time interval(in milisecond) between each samples in normal operation
+#define READ_SAMPLE_TIMES (0.5)     //define the time interval(in milisecond) between each samples in normal operation
 #define ZERO_POINT_VOLTAGE (0.220) //define the output of the sensor in volts when the concentration of CO2 is 400PPM
-#define REACTION_VOLTGAE (0.020) //define the voltage drop of the sensor when move the sensor from air into 1000ppm CO2
+#define REACTION_VOLTGAE (0.030) //define the voltage drop of the sensor when move the sensor from air into 1000ppm CO2
 float CO2Curve[3] = {2.602,ZERO_POINT_VOLTAGE,(REACTION_VOLTGAE/(2.602-3))};   
 //----------------------------------------------------------------------------------------------------------------------------------------------
 void sync_clock() {
@@ -346,7 +346,7 @@ void TimeState() {
 }
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   display.init();
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_16);//24 16 10
@@ -365,10 +365,7 @@ void setup() {
   sync_clock();
   Alarm.timerRepeat(60, sync_clock); //timer task every 60 seconds
   
-  ads.setGain(GAIN_TWOTHIRDS);// 2/3x gain +/- 6.144V  1 bit = 0.1875mV
-  ads.setMode(MODE_CONTIN);// Continuous conversion mode
-  ads.setRate(RATE_128);// 128SPS (default)
-  ads.setOSMode(OSMODE_SINGLE);// Set to start a single-conversion
+  ads.setGain(GAIN_TWOTHIRDS);  // 2/3x gain +/- 6.144V  1 bit = 3mV      0.1875mV (default)
   ads.begin();
   display.init();
   display.flipScreenVertically();

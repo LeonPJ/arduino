@@ -1,7 +1,9 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
- const char* ssid = "dlink-7730";    // Enter SSID here
+
+const char* ssid = "dlink-7730";    // Enter SSID here
 const char* password = "135791113";  //Enter Password here
+
 void setup() {
   Serial.begin(9600);
   delay(1000);
@@ -17,20 +19,21 @@ void setup() {
   delay(500);
   Serial.print(".");
   }
-  Serial.println("");
-  Serial.println("WiFi connected");
+  //Serial.println("");
+  //Serial.println("WiFi connected");
+  //Serial.println(WiFi.localIP());
+  //Serial.println(WiFi.macAddress());
 }
  
 void loop() {
- 
- if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
- 
+
+ if(WiFi.status() == WL_CONNECTED){   //Check WiFi connection status
+   
    HTTPClient http;    //Declare object of class HTTPClient
- 
+
    http.begin("http://120.126.8.126/api/device?api_token=kB9btlaYg4p7Xokqqbk8YyEna4VehQKwcI7DXwToU6nEjJvW5paJ5ZXZCt22");      //Specify request destination
    http.addHeader("Content-Type", "application/x-www-form-urlencoded");  //Specify content-type header
- 
-   int httpCode = http.POST("name=test11&mac_address=bc%3Add%3Ac2%3A17%3A64%3A58&ip_address=192.168.0.105");   //Send the request
+   int httpCode = http.POST("name=EM&mac_address=BC:DD:C2:17:64:58&ip_address=192.168.0.106");   //Send the request
    String payload = http.getString();                  //Get the response payload
  
    Serial.println(httpCode);   //Print HTTP return code
@@ -45,5 +48,5 @@ void loop() {
  }
  
   delay(3000);  //Send a request every 30 seconds
- 
+
 }
