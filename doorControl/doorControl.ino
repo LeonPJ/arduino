@@ -1,5 +1,6 @@
-#define OutDoorPIN D3
-#define InDoorPIN D4
+#define InDoorPIN D3
+#define OutDoorPIN D4
+int count = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -8,26 +9,32 @@ void setup() {
 }
 
 void loop() {
-  int count;
-  int OutDoorCount = digitalRead(OutDoorPIN);
-  //int InDoorCount = digitalRead(InDoorPIN);
-  //Serial.println(InDoorCount);
-  Serial.println(OutDoorCount);
-  /*
-  if(OutDoorCount == LOW) {
-    int i = 0;
-    uint32_t InsideTime = millis();
-    while(InDoorCount != LOW || (millis() - InsideTime) > 5000) {
-      if((millis() - InsideTime) > 3000) {
-        int i = 1;
-      }
+int STATUS;
+  if((digitalRead(OutDoorPIN) > digitalRead(InDoorPIN)) && digitalRead(InDoorPIN) == LOW && STATUS != 2 && STATUS == 0){
+    STATUS = 1;
+    int BerforOutStaus = digitalRead(OutDoorPIN);
+    while(digitalRead(InDoorPIN) == LOW && BerforOutStaus == HIGH){
+      delay(10);
     }
-    if(i != 1) {
-      count++;
-      Serial.println(count);
-    }else{
-      Serial.println("Somebody stuck in door");
+    count++;
+    Serial.println(count);
+    delay(1000);
+  }else if(digitalRead(OutDoorPIN) < digitalRead(InDoorPIN) && digitalRead(OutDoorPIN) == LOW && STATUS !=1 && STATUS == 0){
+    STATUS = 2;
+    int BerforInStaus = digitalRead(InDoorPIN);
+    while(digitalRead(OutDoorPIN) == LOW && BerforInStaus == HIGH){
+      delay(10);
     }
-  }*/
+    count--;
+    if(count <= 0){
+      count = 0;
+    }
+    Serial.println(count);
+    delay(1000);
+  }else if(STATUS == 1 || STATUS == 2){
+        STATUS = 0;
+  }else{
+    
+  }
 
 }
