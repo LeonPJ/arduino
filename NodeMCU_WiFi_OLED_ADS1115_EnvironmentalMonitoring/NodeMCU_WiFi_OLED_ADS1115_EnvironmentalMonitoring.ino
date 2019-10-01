@@ -51,8 +51,8 @@ WiFiUDP udp;  //UDP instance to let us send and receive packets over UDP
 #define GAS_CO (1)
 #define GAS_SMOKE (2)
 #define GAS_CO2 (3)
-float LPGCurve[3] = {2.3,0.32,-0.46};
-float COCurve[3] = {2.3,0.23,-0.49};
+float LPGCurve[3] = {2.3, 0.48, -0.36};// {2.3,0.32,-0.46};
+float COCurve[3] = {2.3, 0.24, -0.50};
 float SmokeCurve[3] = {2.3,0.53,-0.44};
 float Ro9 = 10;// Ro9 is initialized to 10 kilo ohms
 //MG811 inf
@@ -253,14 +253,14 @@ void TempState() {
 
 void COState() {
   uint32_t ThirdPage = millis();
-  while((millis() - ThirdPage) < OLEDSreemHold) {// 一氧化碳
+  //while((millis() - ThirdPage) < OLEDSreemHold) {// 一氧化碳
     int CO = MQGetGasPercentage(MQRead(MQ9_PIN)/Ro9,GAS_CO);
     String SCO = CO + String(" ppm");
     display.clear();
     display.drawString(OLEDItemX, OLEDItemY, "CO:");
     display.drawString(OLEDDataX, OLEDDataY, SCO);
     display.display();
-    }
+    //}
 }
 
 void CO2State() {
@@ -308,6 +308,10 @@ void LPGState() {
   while((millis() - FifthPage) < OLEDSreemHold) {// 液化石油氣
     int LPG = MQGetGasPercentage(MQRead(MQ9_PIN)/Ro9,GAS_LPG);
     String SLPG = LPG +  String(" ppm");
+    Serial.println((MQRead(MQ9_PIN)/Ro9));
+    Serial.print(LPG);
+    Serial.println(" ppm");
+    Serial.println("---");
     display.clear();
     display.drawString(OLEDItemX, OLEDItemY, "LPG:");
     display.drawString(OLEDDataX, OLEDDataY, SLPG);
@@ -346,7 +350,7 @@ void TimeState() {
 }
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   display.init();
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_16);//24 16 10
@@ -377,11 +381,11 @@ void setup() {
 }
 
 void loop() {
-   HumState();
-   TempState();
-   COState();
-   CO2State();
+   //HumState();
+   //TempState();
+   //COState();
+   //CO2State();
    LPGState();
-   FlameState();
-   TimeState();
+   //FlameState();
+   //TimeState();
 }
