@@ -51,7 +51,7 @@ WiFiUDP udp;  //UDP instance to let us send and receive packets over UDP
 #define GAS_CO (1)
 #define GAS_SMOKE (2)
 #define GAS_CO2 (3)
-float LPGCurve[3] = {2.3, 0.48, -0.36};// {2.3,0.32,-0.46};
+float LPGCurve[3] = {2.3, 0.32, -0.47};
 float COCurve[3] = {2.3, 0.24, -0.50};
 float SmokeCurve[3] = {2.3,0.53,-0.44};
 float Ro9 = 10;// Ro9 is initialized to 10 kilo ohms
@@ -63,7 +63,8 @@ float Ro9 = 10;// Ro9 is initialized to 10 kilo ohms
 #define READ_SAMPLE_TIMES (0.5)     //define the time interval(in milisecond) between each samples in normal operation
 #define ZERO_POINT_VOLTAGE (0.220) //define the output of the sensor in volts when the concentration of CO2 is 400PPM
 #define REACTION_VOLTGAE (0.030) //define the voltage drop of the sensor when move the sensor from air into 1000ppm CO2
-float CO2Curve[3] = {2.602,ZERO_POINT_VOLTAGE,(REACTION_VOLTGAE/(2.602-3))};   
+float CO2Curve[3] = {2.602, ZERO_POINT_VOLTAGE, (REACTION_VOLTGAE/(2.602-3))};
+//float CO2Curve[3] = {2.60, 2.51, -0.063};  
 //----------------------------------------------------------------------------------------------------------------------------------------------
 void sync_clock() {
   setTime(getUnixTime() + 28800L);
@@ -253,14 +254,14 @@ void TempState() {
 
 void COState() {
   uint32_t ThirdPage = millis();
-  //while((millis() - ThirdPage) < OLEDSreemHold) {// 一氧化碳
+  while((millis() - ThirdPage) < OLEDSreemHold) {// 一氧化碳
     int CO = MQGetGasPercentage(MQRead(MQ9_PIN)/Ro9,GAS_CO);
     String SCO = CO + String(" ppm");
     display.clear();
     display.drawString(OLEDItemX, OLEDItemY, "CO:");
     display.drawString(OLEDDataX, OLEDDataY, SCO);
     display.display();
-    //}
+    }
 }
 
 void CO2State() {
@@ -273,6 +274,7 @@ void CO2State() {
     Serial.print(volts); 
     Serial.print( "V           " );*/
     CO2 = MGGetPercentage(volts,CO2Curve);
+            Serial.println(CO2);
     /*Serial.print("CO2:");
     if (percentage == -1) {
       Serial.print( "<400" );
@@ -299,6 +301,7 @@ void CO2State() {
         display.clear();
         display.drawString(OLEDItemX, OLEDItemY, "CO2:");
         display.drawString(OLEDDataX, OLEDDataY, SCO2);
+
         display.display();
       }
     }
@@ -384,8 +387,8 @@ void loop() {
    //HumState();
    //TempState();
    //COState();
-   //CO2State();
-   LPGState();
+   CO2State();
+   //LPGState();
    //FlameState();
    //TimeState();
 }

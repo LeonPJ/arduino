@@ -1,8 +1,8 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 
-const char* ssid = "dlink-7730";    // Enter SSID here
-const char* password = "135791113";  //Enter Password here
+const char* ssid = "sunday";    // Enter SSID here
+const char* password = "0919589303";  //Enter Password here
 String IP, MAC;
 void setup() {
   Serial.begin(9600);
@@ -28,7 +28,7 @@ void loop() {
   Serial.println(IP);
   Serial.println(MAC);
 
- if(WiFi.status() == WL_CONNECTED){   //Check WiFi connection status
+ /*if(WiFi.status() == WL_CONNECTED){   //Check WiFi connection status
    HTTPClient http;    //Declare object of class HTTPClient
    http.begin("http://120.126.8.126/api/device?api_token=kB9btlaYg4p7Xokqqbk8YyEna4VehQKwcI7DXwToU6nEjJvW5paJ5ZXZCt22");      //Specify request destination
    http.addHeader("Content-Type", "application/x-www-form-urlencoded");  //Specify content-type header
@@ -40,7 +40,7 @@ void loop() {
  
  }else{
     Serial.println("Error in WiFi connection");   
- }
+ }*/
  
   delay(30000);  //Send a request every 30 seconds
 }
