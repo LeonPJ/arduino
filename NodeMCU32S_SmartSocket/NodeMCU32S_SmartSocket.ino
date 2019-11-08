@@ -10,7 +10,7 @@
 #define GLED 5// LED pin
 #define YLED 18// LED pin
 #define ButtonOne 2// Button pin
-#define ButtonTwo 4// Button pin
+#define ButtonTwo 15// Button pin
 #define RelayControl 16// Control Relay
 #define DataTime 1000// Calculat Data Time
 
@@ -35,15 +35,16 @@ float RMS() {
 
   int IminValue = 4096;
   int VminValue = 4096;
-  count = 0;
+  //count = 0;
   uint32_t start_time = millis();
   while((millis()-start_time) < DataTime) {//sample for 1 Sec
     //count ++;
+    delayMicroseconds(8200);// 取樣次數122次
     IreadValue = analogRead(IPin);
     //delayMicroseconds(1000);
     VreadValue = analogRead(VPin);
     //delayMicroseconds(1000);
-    delayMicroseconds(8200);// 取樣次數122次
+
     if (IreadValue > ImaxValue) {
       ImaxValue = IreadValue;
     }
@@ -59,10 +60,9 @@ float RMS() {
     }
 
   }
+
   Iresult = ((ImaxValue - IminValue) * 3.3)/4096;
   Vresult = ((VmaxValue - VminValue) * 3.3)/4096;
-  /*float VMAXresult = ((VmaxValue) * 3.3)/4096;
-  float VMINresult = ((VminValue) * 3.3)/4096;*/
   float Irms = ((Iresult/2) * 0.707 * 22.9568);// 20A for 100; 30A for 66 
   float Vrms = ((Vresult/2) * 0.707 * 257.13);
   String OLEDI = String(" ") + Irms + String(" A"); 
@@ -71,23 +71,14 @@ float RMS() {
   
   //uint32_t FirstPage = millis();
   //while((millis() - FirstPage) < OLEDSreemHold) { //電流
-    display.setFont(ArialMT_Plain_24);//24 16 10
     display.clear(); // clearing the display
     display.drawString(OLEDItemX, OLEDItemY, OLEDI);
     display.drawString(OLEDDataX, OLEDDataY, OLEDV);
     display.display();
    //}
-  //return OLEDV;
-  /*uint32_t FirstPage = millis();
-  while((millis() - FirstPage) < OLEDSreemHold) { //電壓
-    display.setFont(ArialMT_Plain_24);//24 16 10
-    display.clear(); // clearing the display
-    display.drawString(OLEDItemX, OLEDItemY, OLEDI);
-    display.drawString(OLEDDataX, OLEDDataY, OLEDV);
-    display.display();
-   }*/
-
+    delay(1500);
   //return (Irms * Vrms);
+
  }
 
 
@@ -103,24 +94,14 @@ void setup() {
   pinMode(16, OUTPUT);// 繼電器
   pinMode(17, OUTPUT);// LED
   pinMode(2, INPUT_PULLUP);// 按鍵
-  pinMode(4, INPUT_PULLUP);// 按鍵
+  pinMode(15, INPUT_PULLUP);// 按鍵
   pinMode(14, INPUT_PULLUP);// 電流訊號
   pinMode(13, INPUT_PULLUP);// 電壓訊號
 }
 
 void loop() {
-  //count = 0;
-  //digitalWrite(16, HIGH);
+
   RMS();
-  
-  //delay(1000);
-  /*digitalWrite(16, HIGH);
-  display.clear(); // clearing the display
-  display.drawString(0, 0, "1");
-  display.display();*/
-  /*delay(1000);
-  digitalWrite(16, LOW);
-  display.clear(); // clearing the display
-  display.drawString(0, 0, "2");
-  display.display();*/
+  //digitalWrite(16, LOW);
+
 }
