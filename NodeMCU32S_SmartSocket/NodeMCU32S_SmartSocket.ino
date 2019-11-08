@@ -22,7 +22,7 @@
 
 
 SH1106Wire display(OLEDAddress, SDA, SCL);
-//int count;
+int count;
 float RMS() {
   float Iresult;
   float Vresult;
@@ -35,7 +35,7 @@ float RMS() {
 
   int IminValue = 4096;
   int VminValue = 4096;
-  //count = 0;
+  count = 0;
   uint32_t start_time = millis();
   while((millis()-start_time) < DataTime) {//sample for 1 Sec
     //count ++;
@@ -63,30 +63,29 @@ float RMS() {
   Vresult = ((VmaxValue - VminValue) * 3.3)/4096;
   /*float VMAXresult = ((VmaxValue) * 3.3)/4096;
   float VMINresult = ((VminValue) * 3.3)/4096;*/
-  float Irms = ((Iresult/2) * 0.707 * 1000 / 100);// 20A for 100; 30A for 66 
+  float Irms = ((Iresult/2) * 0.707 * 22.9568);// 20A for 100; 30A for 66 
   float Vrms = ((Vresult/2) * 0.707 * 257.13);
-  //float Vrms = ((Vresult/2));
   String OLEDI = String(" ") + Irms + String(" A"); 
   String OLEDV = String(" ") + Vrms + String(" V");
   //Serial.println(Vrms);
   
-  /*uint32_t FirstPage = millis();
-  while((millis() - FirstPage) < OLEDSreemHold) { //電流
-    display.setFont(ArialMT_Plain_24);//24 16 10
-    display.clear(); // clearing the display
-    //display.drawString(OLEDItemX, OLEDItemY, OLEDI);
-    display.drawString(OLEDDataX, OLEDDataY, OLEDV);
-    display.display();
-   }*/
-
   //uint32_t FirstPage = millis();
-  //while((millis() - FirstPage) < OLEDSreemHold) { //電壓
+  //while((millis() - FirstPage) < OLEDSreemHold) { //電流
     display.setFont(ArialMT_Plain_24);//24 16 10
     display.clear(); // clearing the display
-    //display.drawString(OLEDItemX, OLEDItemY, OLEDI);
+    display.drawString(OLEDItemX, OLEDItemY, OLEDI);
     display.drawString(OLEDDataX, OLEDDataY, OLEDV);
     display.display();
    //}
+  //return OLEDV;
+  /*uint32_t FirstPage = millis();
+  while((millis() - FirstPage) < OLEDSreemHold) { //電壓
+    display.setFont(ArialMT_Plain_24);//24 16 10
+    display.clear(); // clearing the display
+    display.drawString(OLEDItemX, OLEDItemY, OLEDI);
+    display.drawString(OLEDDataX, OLEDDataY, OLEDV);
+    display.display();
+   }*/
 
   //return (Irms * Vrms);
  }
@@ -111,14 +110,15 @@ void setup() {
 
 void loop() {
   //count = 0;
+  //digitalWrite(16, HIGH);
   RMS();
   
-  /*delay(1000);
-  digitalWrite(16, HIGH);
+  //delay(1000);
+  /*digitalWrite(16, HIGH);
   display.clear(); // clearing the display
   display.drawString(0, 0, "1");
-  display.display();
-  delay(1000);
+  display.display();*/
+  /*delay(1000);
   digitalWrite(16, LOW);
   display.clear(); // clearing the display
   display.drawString(0, 0, "2");

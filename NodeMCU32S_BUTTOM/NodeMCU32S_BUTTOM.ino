@@ -5,44 +5,28 @@
 SH1106Wire display(0x3c, 21, 22); // SDA SCL
 
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600);
   display.init();
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_24);//24 16 8
   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  //pinMode(16, OUTPUT);
-  /*pinMode(17, OUTPUT);
-  pinMode(5, OUTPUT);
-  pinMode(18, OUTPUT);*/
-  pinMode(2, INPUT);
+  pinMode(15, INPUT);
   pinMode(4, INPUT);
 }
 
 void loop() {
-  /*display.clear(); // clearing the display
-  display.drawString(0, 0, "Hello world");
-  display.drawString(0, 24, "Hola");
-  display.display();*/
-  /*delay(1000);
-  digitalWrite(16, HIGH);
-  delay(1000);
-  digitalWrite(16, LOW);*/
-  /*delay(1000);
-  digitalWrite(17, HIGH);
-  delay(1000);
-  digitalWrite(17, LOW);
-  delay(1000);
-  digitalWrite(5, HIGH);
-  delay(1000);
-  digitalWrite(5, LOW);
-  delay(1000);
-  digitalWrite(18, HIGH);
-  delay(1000);
-  digitalWrite(18, LOW);*/
-  //delay(100);
-  Serial.print("B1 status: ");
-  Serial.println(digitalRead(2));
+  int BOneStatus = digitalRead(15);
+  int BTwoStatus = digitalRead(4);
+  String SBOneStatus = String(BOneStatus);
+  String SBTwoStatus = String(BTwoStatus);
+  display.clear(); // clearing the display
+  display.drawString(0, 0, SBOneStatus);
+  display.drawString(0, 24, SBTwoStatus);
+  display.display();
+  
+  /*Serial.print("B1 status: ");
+  Serial.println(digitalRead(15));
   Serial.print("B2 status: ");
   Serial.println(digitalRead(4));
-  Serial.println("-----------------");
+  Serial.println("-----------------");*/
 }
