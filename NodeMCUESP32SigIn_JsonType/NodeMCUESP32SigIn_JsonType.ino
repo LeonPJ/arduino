@@ -8,20 +8,19 @@ const char* password =  "135791113";
 
 String IP, MAC;
 
+String NameDevice = "SmartSocket";
+
 void setup() {
   Serial.begin(9600);
   delay(1000);
 
-  Serial.println("Connecting to ");
+  Serial.print("Connecting to ");
   Serial.println(ssid);
-
-  //connect to your local wi-fi network
   WiFi.begin(ssid, password);
 
-  //check wi-fi is connected to wi-fi network
   while (WiFi.status() != WL_CONNECTED) {
-  delay(500);
-  Serial.print(".");
+    delay(500);
+    Serial.print(".");
   }
   Serial.println("");
   Serial.println("WiFi connected");
@@ -30,9 +29,10 @@ void setup() {
 }
  
 void loop() {
-  String inf = "name=SmartSocket1&mac_address=" + MAC + "&ip_address=" + IP;
-  HTTPClient http;    //Declare object of class HTTPClient
-  http.begin("http://120.126.8.126/api/device?api_token=kB9btlaYg4p7Xokqqbk8YyEna4VehQKwcI7DXwToU6nEjJvW5paJ5ZXZCt22");      //Specify request destination
+  HTTPClient http;//Declare object of class HTTPClient
+  delay(15000);
+  String inf = "name=" + NameDevice + "&mac_address=" + MAC + "&ip_address=" + IP;
+  http.begin("http://120.126.8.126/api/device?api_token=60kSeSf78sXjr0W9AtZoxMC9vIj1gzZP8GcdtHtTIaELm7PteocrYzBgjFVD");      //Specify request destination
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");  //Specify content-type header
   int httpCode = http.POST(inf);   //Send the reques
   String JSONMessage = {http.getString()}; //Original message
@@ -46,7 +46,6 @@ void loop() {
   const char * data = parsed["data"]; // get api key
   Serial.println(data);
   Serial.println();
-  delay(10000);
 }
 
 //{"code":"000","message":"success","data":"7f68f217-fd91-4757-bf61-4759866728c5"}
