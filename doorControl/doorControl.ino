@@ -1,14 +1,16 @@
-#define InDoorPIN D3
-#define OutDoorPIN D4
+#define InDoorPIN D3// 內側
+#define OutDoorPIN D4// 外側
 int count = 0;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(OutDoorPIN, INPUT_PULLUP);
   pinMode(InDoorPIN, INPUT_PULLUP);
+  pinMode(OutDoorPIN, INPUT_PULLUP);
+
 }
 
 void loop() {
+  //delay(100);
 int STATUS;
   if((digitalRead(OutDoorPIN) > digitalRead(InDoorPIN)) && digitalRead(InDoorPIN) == LOW && STATUS != 2 && STATUS == 0){
     STATUS = 1;
@@ -36,5 +38,8 @@ int STATUS;
   }else{
     
   }
-
+  /*delay(1000);
+Serial.println(digitalRead(InDoorPIN));
+Serial.println(digitalRead(OutDoorPIN));
+Serial.println("------------");*/
 }

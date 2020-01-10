@@ -29,7 +29,8 @@ void setup() {
 void loop() {
   if(WiFi.status() == WL_CONNECTED){   //Check WiFi connection status
     Serial.println("connect...");
-    delay(15000);
+    //delay(15000);
+    delay(2000);
     Inf = "http://120.126.8.126/api/switch/" + APIKEY + "?api_token=60kSeSf78sXjr0W9AtZoxMC9vIj1gzZP8GcdtHtTIaELm7PteocrYzBgjFVD";
     HTTPClient http;// Declare object of class HTTPClient
     //http.begin("http://120.126.8.126/api/switch/07aaab96-b507-4afc-9d1a-3175dd653d08?api_token=60kSeSf78sXjr0W9AtZoxMC9vIj1gzZP8GcdtHtTIaELm7PteocrYzBgjFVD");

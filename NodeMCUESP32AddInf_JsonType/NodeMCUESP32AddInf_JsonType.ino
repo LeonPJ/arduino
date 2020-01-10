@@ -8,9 +8,10 @@ const char* password = "135791113"; //Enter Password here
 
 String IP, MAC, Inf;
 
-String APIKEY = "9b4fdd1e-e611-4c11-a0a6-eb32bb3006cb";
+String APIKEY = "07aaab96-b507-4afc-9d1a-3175dd653d08";
 String DeviceID = "1";
 String DeviceDescription = "Smart Socket";
+//String DeviceDescription = "Test Device";
 
 void setup() {
   Serial.begin(9600);
@@ -41,17 +42,17 @@ void loop() {
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");  //Specify content-type header
     int httpCode = http.POST(Inf);  //Send the request
     String JSONMessage = {http.getString()}; //Original message
+    
     StaticJsonBuffer<300> JSONBuffer; //Memory pool
     JsonObject& parsed = JSONBuffer.parseObject(JSONMessage); //Parse message
-    if(!parsed.success()) {   //Check for errors in parsing
+    if(!parsed.success()) {//Check for errors in parsing
       Serial.println("Parsing failed");
       delay(5000);
       return;
     }
-    const char * message = parsed["message"]; // get api key
+    const char * message = parsed["message"];
     Serial.println(message);
-    //Serial.println();
-    //delay(10000);
+
   }
 }
 //{"code":"000","message":"success","data":{"device":true,"formula":true}}
