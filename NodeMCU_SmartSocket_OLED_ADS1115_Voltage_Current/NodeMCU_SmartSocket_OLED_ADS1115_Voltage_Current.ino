@@ -17,58 +17,51 @@ Adafruit_ADS1115 ads(0x48);
 
 void IrmsVrms() {
   uint32_t RMSPage = millis();
-    float Iresult = 0.00;
-    float ImaxValue = 0.50;// I max value
-    float IminValue = 4.50;// I min value
-    float Vresult = 0.00;
-    float VmaxValue = 1.00;// V max value
-    float VminValue = 3.30;// V min value
-    int16_t adc0, adc1;
-    int count = 0;
-    uint32_t start_time = millis();
-      while((millis()-start_time) < 1000) {// 電壓量測1秒
-        adc0 = ads.readADC_SingleEnded(0);// 電壓
-        adc1 = ads.readADC_SingleEnded(1);// 電流
-        float readVValue = (adc0 * 0.1875 /1000);
-        float readIValue = (adc1 * 0.1875 /1000);
-        float readPValue = (((adc0 * 0.1875 / 1000) / 2 * 172) * ((adc1 * 0.1875 / 1000) * 1000 / 66));
-        if(8250 <= readPValue <= 8500){
-          count++;
-        }
+  float Iresult = 0.00;
+  float ImaxValue = 0.50;// I max value
+  float IminValue = 4.50;// I min value
+  float Vresult = 0.00;
+  float VmaxValue = 1.00;// V max value
+  float VminValue = 3.30;// V min value
+  int16_t adc0, adc1;
+  int count = 0;
+  uint32_t start_time = millis();
+    while((millis()-start_time) < 1000) {
+      adc0 = ads.readADC_SingleEnded(0);// 電壓
+      adc1 = ads.readADC_SingleEnded(1);// 電流
+      float readVValue = (adc0 * 0.1875 /1000);
+      float readIValue = (adc1 * 0.1875 /1000);
         
-        if (readVValue > VmaxValue) { // 電壓n電流大小值判斷
-          VmaxValue = readVValue;// record the maximum sensor value
-            }else if (readVValue < VminValue) {
-              VminValue = readVValue;// record the maximum sensor value
-            }
+      if (readVValue > VmaxValue) { // 電壓n電流大小值判斷
+        VmaxValue = readVValue;// record the maximum sensor value
+      }
+      if (readVValue < VminValue) {
+        VminValue = readVValue;// record the maximum sensor value
+      }
             
-        if (readIValue > ImaxValue) { // 電流判斷
-          ImaxValue = readIValue;// record the maximum sensor value
-            }else if (readIValue < IminValue) {
-              IminValue = readIValue;// record the maximum sensor value
-            }
-         
+      if (readIValue > ImaxValue) { // 電流判斷
+        ImaxValue = readIValue;// record the maximum sensor value
+       }
+      if (readIValue < IminValue) {
+        IminValue = readIValue;// record the maximum sensor value
       }
-      Serial.println(count);
-      Vresult = (VmaxValue - VminValue);
-      Iresult = (ImaxValue - IminValue);
-      //Serial.println(Iresult);
-      if(Iresult <= 0.03){
-        Iresult = 0.00;
-      }
-      float Irms = ((Iresult/2) * 0.707 * 1000 / 66);
-      float Vrms = ((Vresult / 2) * 0.707 * 172);// 172 294
-      String SVrms = Vrms + String(" V");
-      String SIrms = Irms + String(" A");
-      //Serial.println(SVrms);
+      count++;
+    }
+    //Serial.println(count);
+    Vresult = (VmaxValue - VminValue);
+    Iresult = (ImaxValue - IminValue);
+    float Irms = ((Iresult/2) * 0.707 * 1000 / 66);
+    float Vrms = ((Vresult / 2) * 0.707 * 172);// 172 294
+    String SVrms = Vrms + String(" V");
+    String SIrms = Irms + String(" A");
       
-      uint32_t VrmsPage = millis();
-      while((millis() - VrmsPage) < OLEDSreemHold) {// 電壓
+    /*uint32_t VrmsPage = micros();
+      while((micros() - VrmsPage) < OLEDSreemHold) {// 電壓
         display.clear();
         display.drawString(OLEDItemX, OLEDItemY, "Vrms:");
         display.drawString(OLEDDataX, OLEDDataY, SVrms);
         display.display();
-      }
+    }*/
       
       uint32_t IrmsPage = millis();
       while((millis() - IrmsPage) < OLEDSreemHold) {// 電流
@@ -78,7 +71,7 @@ void IrmsVrms() {
         display.display();
       }
       
-      uint32_t SPage = millis();
+      /*uint32_t SPage = millis();
       while((millis() - SPage) < OLEDSreemHold) {// 瓦特  
         float S = Vrms * Irms;
         String SS = S + String(" W");
@@ -86,9 +79,9 @@ void IrmsVrms() {
         display.drawString(OLEDItemX, OLEDItemY, "S:");
         display.drawString(OLEDDataX, OLEDDataY, SS);
         display.display();
-      }
+      }*/
       
-      uint32_t PFPage = millis();
+      /*uint32_t PFPage = millis();
       while((millis() - PFPage) < OLEDSreemHold) {// 功率因數
         //float PF = (PFValue / (Vrms * Irms));
         //String SPF = PF + String(" ");
@@ -96,7 +89,7 @@ void IrmsVrms() {
         display.drawString(OLEDItemX, OLEDItemY, "PF:");
         //display.drawString(OLEDDataX, OLEDDataY, SPF);
         display.display();
-      }
+      }*/
 
   }
 
@@ -118,38 +111,5 @@ void setup() {
 }
 
 void loop() {
-
-  float  Vrms = 0.00;
-  uint32_t PFPage = millis();
-  while((millis() - PFPage) < OLEDSreemHold) {// 功率因數
-//     /   float Vresult = 0.00;
-  //  float VmaxValue = 1.00;// V max value
-  //  float VminValue = 3.30;// V min value
-   // int16_t adc0, adc1;
- //   adc0 = ads.readADC_SingleEnded(0);// 電壓
-
- //   float readVValue = (adc0 * 0.1875 /1000);
-     //       if (readVValue > VmaxValue) { // 電壓n電流大小值判斷
-       //   VmaxValue = readVValue;// record the maximum sensor value
-      //      }else if (readVValue < VminValue) {
-           //   VminValue = readVValue;// record the maximum sensor value
-       //     }
-       Serial.println( ads.readADC_SingleEnded(0));
-            //delayMicroseconds(10650);
-           ///Vresult = (VmaxValue - VminValue);
-  //Vrms = ((Vresult / 2) * 0.707 * 172);// 172 294
-
-  }
-    Serial.println("---------");
-
-  
-  //IrmsVrms();
-  //digitalWrite(D3, LOW);
-  //int ButtomControlState = digitalRead(D5);
-  /*if(ButtomControlState == HIGH){  // 接合0 打開1
-    digitalWrite(D3, LOW);// buttom off
-    }else if(ButtomControlState == LOW){
-      digitalWrite(D3, HIGH);// buttom on
-      }else{
-      }*/
+  IrmsVrms();
 }

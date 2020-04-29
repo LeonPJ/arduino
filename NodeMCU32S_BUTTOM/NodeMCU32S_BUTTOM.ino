@@ -10,13 +10,13 @@ void setup() {
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_24);//24 16 8
   display.setTextAlignment(TEXT_ALIGN_LEFT);
-  pinMode(15, INPUT);
-  pinMode(4, INPUT);
+  pinMode(17, INPUT);
+  pinMode(16, INPUT);
 }
 
 void loop() {
-  int BOneStatus = digitalRead(15);
-  int BTwoStatus = digitalRead(4);
+  int BOneStatus = digitalRead(17);
+  int BTwoStatus = digitalRead(16);
   String SBOneStatus = String(BOneStatus);
   String SBTwoStatus = String(BTwoStatus);
   display.clear(); // clearing the display

@@ -11,9 +11,9 @@ void setup() {
   display.setFont(ArialMT_Plain_24);//24 16 8
   display.setTextAlignment(TEXT_ALIGN_LEFT);
   //pinMode(16, OUTPUT);
-  pinMode(17, OUTPUT);
-  pinMode(5, OUTPUT);
+  pinMode(19, OUTPUT);
   pinMode(18, OUTPUT);
+  pinMode(5, OUTPUT);
 }
 
 void loop() {
@@ -26,15 +26,15 @@ void loop() {
   delay(1000);
   digitalWrite(16, LOW);*/
   delay(1000);
-  digitalWrite(17, HIGH);
+  digitalWrite(19, HIGH);
   delay(1000);
-  digitalWrite(17, LOW);
-  delay(1000);
-  digitalWrite(5, HIGH);
-  delay(1000);
-  digitalWrite(5, LOW);
+  digitalWrite(19, LOW);
   delay(1000);
   digitalWrite(18, HIGH);
   delay(1000);
   digitalWrite(18, LOW);
+  delay(1000);
+  digitalWrite(5, HIGH);
+  delay(1000);
+  digitalWrite(5, LOW);
 }

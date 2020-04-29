@@ -10,9 +10,9 @@ void setup() {
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_24);//24 16 8
   display.setTextAlignment(TEXT_ALIGN_LEFT);*/
-  pinMode(16, OUTPUT);// 
-  pinMode(4, INPUT_PULLUP);
-
+  //pinMode(16, OUTPUT);// 
+  //pinMode(4, INPUT_PULLUP);
+  pinMode(4, OUTPUT);
 }
 
 void loop() {
@@ -21,7 +21,7 @@ void loop() {
   display.drawString(0, 24, "Hola");
   display.display();*/
   delay(1000);
-  digitalWrite(16, HIGH);
+  digitalWrite(4, HIGH);
   delay(1000);
-  digitalWrite(16, LOW);
+  digitalWrite(4, LOW);
 }
