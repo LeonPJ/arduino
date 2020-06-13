@@ -18,7 +18,7 @@
 #define RelayControl 4// Control Relay
 #define DataTime 16667// Calculat Data Time
 //#define DataTime 1000000// Calculat Data Time
-#define OLEDSreemHold 1000// 顯示資料保持1秒
+#define OLEDSreemHold 2000// 顯示資料保持1秒
 #define OLEDItemX 0// 顯示OLED名稱 X軸
 #define OLEDItemY 0// 顯示OLED名稱 Y軸
 #define OLEDDataX 0// 顯示OLED數據 X軸
@@ -26,15 +26,16 @@
 #define CurrentCorrectionValuePointFiveToThree 1.22637// 電流Irms在0.5~3 時, 校正參數
 #define CurrentCorrectionValueThreeToTwenty 1.1819// 電流Irms在3~20 時, 校正參數
 #define VoltagetCorrectionValueFull 0.9649// 電壓Vrms校正參數
+#define POffectADC 1.65
 const char* ssid = "dlink-7730";
 const char* password =  "135791113";
 String IP, MAC;
 
 SH1106Wire display(OLEDAddress, SDA, SCL);
-int IreadValue, VreadValue, ImaxValue, VmaxValue, IminValue, VminValue, DataCount, count;
-float Iresult, Vresult, Irms, Vrms, ITotalData, VTotalData, IAvgData, VAvgData, CCVIrms;
-uint32_t start_time, FirstPage;
-String OLEDI, OLEDV;
+float IreadValue, VreadValue, ImaxValue, VmaxValue, IminValue, VminValue, DataCount, PmaxValue, PminValue, PreadValue, count, CurrentStatus;
+float Iresult, Vresult, Irms, Vrms, ITotalData, VTotalData, IAvgData, VAvgData, CCVIrms, S, Presult, PFCorrectionValue;
+uint32_t start_time, FirstPage, SecondPage;
+String OLEDI, OLEDV, OLEDRms, OLEDS, OLEDPF;
 
 
 
@@ -49,8 +50,10 @@ int Status(){
 float RMS() {
   ImaxValue = 0;// 電流ADC讀取最大值初始設定為0
   VmaxValue = 0;// 電壓ADC讀取最大值初始設定為0
+  PmaxValue = -2.7225;// 電壓與電流相乘初始設定為0
   IminValue = 4095;// 電流ADC讀取最大值初始設定為4096
   VminValue = 4095;// 電壓ADC讀取最大值初始設定為4096
+  PminValue = 2.7225;
   ITotalData = 0;// 電流n次加總初始設定為0
   VTotalData = 0;// 電壓n次加總初始設定為0
   IAvgData = 0;// 電流平均初始設定為0
@@ -62,16 +65,16 @@ float RMS() {
   while((micros()-start_time) <= DataTime) {// 取樣時間16.6667ms 1s=1000000
     //delayMicroseconds(8250);// 取樣次數122次 delay8250 FOR 1S
     //delayMicroseconds(126);// 取樣次數122次 delay126 FOR 16.6667ms
-    delayMicroseconds(58);// FOR TWO ADC IN 16.667MS
-    IreadValue = analogRead(IPin);
+    delayMicroseconds(57);// FOR TWO ADC IN 16.667MS
+    IreadValue = analogRead(IPin);// 讀取電流ADC
     //VreadValue = analogRead(VPin);
     //delayMicroseconds(114);// 取樣次數100次 144
     //delayMicroseconds(4125);// FOR TWO ADC IN 1S
     delayMicroseconds(57);// FOR TWO ADC IN 16.667MS
-    VreadValue = analogRead(VPin);
-    
+    VreadValue = analogRead(VPin);// 讀取電壓ADC
+    //PreadValue = ((IreadValue*3.3/4095) - POffectADC) * ((VreadValue*3.3/4095) - POffectADC);
     //delayMicroseconds(4110);// FOR TWO ADC IN 1S
-    if(IreadValue > ImaxValue) {// 電流判斷大小值
+    /*if(IreadValue > ImaxValue) {// 電流判斷大小值
       ImaxValue = IreadValue;
       }
     if(IreadValue < IminValue) {
@@ -84,41 +87,72 @@ float RMS() {
     if(VreadValue < VminValue) {
       VminValue = VreadValue;
     }
+    
+    if(PreadValue > PmaxValue) {// PF判斷大小值
+      PmaxValue = PreadValue;
+    }
+    if(PreadValue < PminValue) {
+      PminValue = PreadValue;
+    }*/
       //Status();
-      //count++;
+      count++;
   }
-  //Serial.println(count);
-  //count = 0;
-  Iresult = ((ImaxValue - IminValue) * 3.3)/4095;
+  Serial.println(count);
+  count = 0;
+  Iresult = ((ImaxValue - IminValue) * 3.3)/4095;// 將電流
   Vresult = ((VmaxValue - VminValue) * 3.3)/4095;
+  Presult = (PmaxValue + PminValue);
   //Serial.println(count);
   Irms = ((Iresult/2) * 0.707 * 22.727);// 30A for 66 22.727
-  
-  if(0.5 <= Irms <= 3){
+  // 電流校整參數
+  if(0.5 <= Irms <= 3){// 當電流rms值在0.5~3安培時
     CCVIrms = Irms * CurrentCorrectionValuePointFiveToThree;
-  }else if(3 < Irms <= 20){//當電流rms值在3~20安培時
+    CurrentStatus = 1;
+  }else if(3 < Irms <= 20){// 當電流rms值在3~20安培時
     CCVIrms = Irms * CurrentCorrectionValueThreeToTwenty;
+    CurrentStatus = 2;
   }else{
      CCVIrms = Irms * 0;
+     CurrentStatus = 3;
   }
-  
-  //Irms = ((Iresult/2));// 30A for 66 22.727
-  //Vrms = ((Vresult/2) * 0.707 * 257.13) * VoltagetCorrectionValueFull;
   Vrms = ((Vresult/2) * 0.707 * 257.13);
+  S = CCVIrms * Vrms;
+  if(CurrentStatus == 1){
+    PFCorrectionValue = ((Presult/2) * 22.727 * CurrentCorrectionValuePointFiveToThree * 257.13);
+  }else if(CurrentStatus == 2){
+    PFCorrectionValue = ((Presult/2) * 22.727 * CurrentCorrectionValueThreeToTwenty * 257.13);
+  }else if(CurrentStatus == 3){
+    PFCorrectionValue = ((Presult/2) * 22.727 * 257.13 * 0);
+  }
+  //PFCorrectionValue = ((Presult/2)/((Iresult/2*0.707)*(Vresult/2*0.707)));
   //-ITotalData += Irms;
   //-VTotalData += Vrms;
   //-}
   //-IAvgData = (ITotalData/10);
   //-VAvgData = (VTotalData/10);
-  //OLEDI = String("Irms: ") + Irms + String(" A"); 
-  OLEDI = String("A = ") + CCVIrms;
-  OLEDV = String("V = ") + Vrms;
-  //OLEDI = String("I: ") + Irms;
+  OLEDRms = String("rms");
+  OLEDI = String("I  :") + CCVIrms + String("A");
+  OLEDV = String("V  :") + Vrms + String("V");
+  OLEDS = String("S:") + S + String("W");
+  OLEDPF = String("P.F.:") + PFCorrectionValue;
   FirstPage = millis();
   while((millis() - FirstPage) < OLEDSreemHold){ //電流
     display.clear(); // clearing the display
+    display.setFont(ArialMT_Plain_10);// 設定rms字形大小
+    display.drawString(5, 12, OLEDRms);// for I
+    display.drawString(12, 36, OLEDRms);// for V
+    display.setFont(ArialMT_Plain_24);// 設定顯示量測值字形大小
     display.drawString(OLEDItemX, OLEDItemY, OLEDI);
     display.drawString(OLEDDataX, OLEDDataY, OLEDV); 
+    display.display();
+    //Status();
+  }
+  SecondPage = millis();
+  while((millis() - SecondPage) < OLEDSreemHold){ //電流
+    display.clear(); // clearing the display
+    display.setFont(ArialMT_Plain_24);// 設定顯示量測值字形大小
+    display.drawString(OLEDItemX, OLEDItemY, OLEDS);
+    display.drawString(OLEDDataX, OLEDDataY, OLEDPF); 
     display.display();
     //Status();
   }
@@ -126,7 +160,7 @@ float RMS() {
 }
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   display.init();
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_16);//24 16 8
