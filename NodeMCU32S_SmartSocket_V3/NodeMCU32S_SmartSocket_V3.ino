@@ -63,18 +63,13 @@ float RMS() {
   //-for(DataCount = 0; DataCount < 10; DataCount++){
   start_time = micros();
   while((micros()-start_time) <= DataTime) {// 取樣時間16.6667ms 1s=1000000
-    //delayMicroseconds(8250);// 取樣次數122次 delay8250 FOR 1S
-    //delayMicroseconds(126);// 取樣次數122次 delay126 FOR 16.6667ms
     delayMicroseconds(57);// FOR TWO ADC IN 16.667MS
     IreadValue = analogRead(IPin);// 讀取電流ADC
-    //VreadValue = analogRead(VPin);
-    //delayMicroseconds(114);// 取樣次數100次 144
-    //delayMicroseconds(4125);// FOR TWO ADC IN 1S
     delayMicroseconds(57);// FOR TWO ADC IN 16.667MS
     VreadValue = analogRead(VPin);// 讀取電壓ADC
     //PreadValue = ((IreadValue*3.3/4095) - POffectADC) * ((VreadValue*3.3/4095) - POffectADC);
-    //delayMicroseconds(4110);// FOR TWO ADC IN 1S
-    /*if(IreadValue > ImaxValue) {// 電流判斷大小值
+
+    if(IreadValue > ImaxValue) {// 電流判斷大小值
       ImaxValue = IreadValue;
       }
     if(IreadValue < IminValue) {
@@ -88,20 +83,18 @@ float RMS() {
       VminValue = VreadValue;
     }
     
-    if(PreadValue > PmaxValue) {// PF判斷大小值
+    /*if(PreadValue > PmaxValue) {// PF判斷大小值
       PmaxValue = PreadValue;
     }
     if(PreadValue < PminValue) {
       PminValue = PreadValue;
     }*/
       //Status();
-      count++;
   }
-  Serial.println(count);
-  count = 0;
+
   Iresult = ((ImaxValue - IminValue) * 3.3)/4095;// 將電流
   Vresult = ((VmaxValue - VminValue) * 3.3)/4095;
-  Presult = (PmaxValue + PminValue);
+  //Presult = (PmaxValue + PminValue);
   //Serial.println(count);
   Irms = ((Iresult/2) * 0.707 * 22.727);// 30A for 66 22.727
   // 電流校整參數
@@ -116,7 +109,7 @@ float RMS() {
      CurrentStatus = 3;
   }
   Vrms = ((Vresult/2) * 0.707 * 257.13);
-  S = CCVIrms * Vrms;
+  //S = CCVIrms * Vrms;
   if(CurrentStatus == 1){
     PFCorrectionValue = ((Presult/2) * 22.727 * CurrentCorrectionValuePointFiveToThree * 257.13);
   }else if(CurrentStatus == 2){
@@ -125,18 +118,13 @@ float RMS() {
     PFCorrectionValue = ((Presult/2) * 22.727 * 257.13 * 0);
   }
   //PFCorrectionValue = ((Presult/2)/((Iresult/2*0.707)*(Vresult/2*0.707)));
-  //-ITotalData += Irms;
-  //-VTotalData += Vrms;
-  //-}
-  //-IAvgData = (ITotalData/10);
-  //-VAvgData = (VTotalData/10);
   OLEDRms = String("rms");
   OLEDI = String("I  :") + CCVIrms + String("A");
   OLEDV = String("V  :") + Vrms + String("V");
   OLEDS = String("S:") + S + String("W");
   OLEDPF = String("P.F.:") + PFCorrectionValue;
   FirstPage = millis();
-  while((millis() - FirstPage) < OLEDSreemHold){ //電流
+  while((millis() - FirstPage) < OLEDSreemHold){ //電流電壓
     display.clear(); // clearing the display
     display.setFont(ArialMT_Plain_10);// 設定rms字形大小
     display.drawString(5, 12, OLEDRms);// for I
@@ -147,15 +135,15 @@ float RMS() {
     display.display();
     //Status();
   }
-  SecondPage = millis();
-  while((millis() - SecondPage) < OLEDSreemHold){ //電流
+  /*SecondPage = millis();
+  while((millis() - SecondPage) < OLEDSreemHold){ //功率功率因數
     display.clear(); // clearing the display
     display.setFont(ArialMT_Plain_24);// 設定顯示量測值字形大小
     display.drawString(OLEDItemX, OLEDItemY, OLEDS);
     display.drawString(OLEDDataX, OLEDDataY, OLEDPF); 
     display.display();
     //Status();
-  }
+  }*/
 
 }
 

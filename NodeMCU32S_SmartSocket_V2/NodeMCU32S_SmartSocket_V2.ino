@@ -115,10 +115,13 @@ float RMS() {
   OLEDV = String("V = ") + Vrms;
   //OLEDI = String("I: ") + Irms;
   FirstPage = millis();
+
+  String SImin = String(Iresult);
+  
   while((millis() - FirstPage) < OLEDSreemHold){ //電流
     display.clear(); // clearing the display
     display.drawString(OLEDItemX, OLEDItemY, OLEDI);
-    display.drawString(OLEDDataX, OLEDDataY, OLEDV); 
+    display.drawString(OLEDDataX, OLEDDataY, OLEDV);
     display.display();
     //Status();
   }
