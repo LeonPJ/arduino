@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=Net2N222_3 Pin=ESP-WROOM-32-Ga
+Removed Pin From Net: NetName=Net2N222_3 Pin=ESP-WROOM-32-Ga
+Removed Pin From Net: NetName=Net5V_1 Pin=ESP-WROOM-32-VIN
+Removed Pin From Net: NetName=Net5V_1 Pin=ESP-WROOM-32-VIN
+Removed Member From Class: ClassName=IronDoorControl Member=ESP-WROOM-32
+Added Component: Designator=nodemcu(nodemcu)
+Added Pin To Net: NetName=Net2N222_3 Pin=nodemcu-Gc
+Added Pin To Net: NetName=Net2N222_3 Pin=nodemcu-Gc
+Added Pin To Net: NetName=Net5V_1 Pin=nodemcu-Vin
+Added Pin To Net: NetName=Net5V_1 Pin=nodemcu-Vin
+Added Pin To Net: NetName=Netnodemcu_D0 Pin=nodemcu-D0
+Added Pin To Net: NetName=Netnodemcu_D0 Pin=nodemcu-D0
+Added Pin To Net: NetName=Netnodemcu_D0 Pin=R2-2
+Added Net: Name=Netnodemcu_D0
+Added Member To Class: ClassName=IronDoorControl Member=Component nodemcu
+Added Room: Name=IronDoorControl

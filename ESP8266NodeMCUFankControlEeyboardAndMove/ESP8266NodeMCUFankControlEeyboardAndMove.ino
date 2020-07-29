@@ -46,21 +46,21 @@ void loop() {
         break;
 
     case 109:// 擺頭中 m
-        while(analogRead(A0) != 797){
+        while(analogRead(A0) != 56){
           delay(100);
           }
             irsend.sendNEC(0x80FFF10E);
         break;
 
      case 108:// 擺 l
-        while(analogRead(A0) != 886){
+        while(analogRead(A0) != 38){
           delay(100);
           }
             irsend.sendNEC(0x80FFF10E);
         break;
 
      case 114:// 擺 r
-        while(analogRead(A0) != 696){
+        while(analogRead(A0) != 60){
           delay(100);
           Serial.println(analogRead(A0));
           }
@@ -80,4 +80,3 @@ void loop() {
   }
     
 }
-

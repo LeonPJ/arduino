@@ -1,0 +1,58 @@
+Added Component: Designator=2N222(TO92-MPS2222A)
+Added Component: Designator=2N7000(TO92-MPS2222A)
+Added Component: Designator=5V(WhiteMos)
+Added Component: Designator=C1(SMD-0805C)
+Added Component: Designator=C2(RB(02/5))
+Added Component: Designator=C4(SMD-0805C)
+Added Component: Designator=D1(DIODE8mm)
+Added Component: Designator=ESP-WROOM-32(ESP-WROOM-32)
+Added Component: Designator=plug(BigGreenMos)
+Added Component: Designator=R3(RES0.6)
+Added Component: Designator=R7(SMD-1206-RES)
+Added Component: Designator=R8(SMD-1206-RES)
+Added Component: Designator=RELAY(SLA-05VDC-SL-C)
+Added Pin To Net: NetName=Net2N222_1 Pin=2N222-1
+Added Pin To Net: NetName=Net2N222_1 Pin=R7-2
+Added Net: Name=Net2N222_1
+Added Pin To Net: NetName=Net2N222_2 Pin=2N222-2
+Added Pin To Net: NetName=Net2N222_2 Pin=2N7000-1
+Added Pin To Net: NetName=Net2N222_2 Pin=R8-1
+Added Net: Name=Net2N222_2
+Added Pin To Net: NetName=Net2N222_3 Pin=2N222-3
+Added Pin To Net: NetName=Net2N222_3 Pin=2N7000-2
+Added Pin To Net: NetName=Net2N222_3 Pin=5V-1
+Added Pin To Net: NetName=Net2N222_3 Pin=C1-2
+Added Pin To Net: NetName=Net2N222_3 Pin=C2-2
+Added Pin To Net: NetName=Net2N222_3 Pin=C4-2
+Added Pin To Net: NetName=Net2N222_3 Pin=ESP-WROOM-32-Ga
+Added Pin To Net: NetName=Net2N222_3 Pin=ESP-WROOM-32-Ga
+Added Net: Name=Net2N222_3
+Added Pin To Net: NetName=Net2N7000_2 Pin=2N7000-3
+Added Pin To Net: NetName=Net2N7000_2 Pin=R3-2
+Added Pin To Net: NetName=Net2N7000_2 Pin=RELAY-C2
+Added Net: Name=Net2N7000_2
+Added Pin To Net: NetName=Net5V_2 Pin=5V-2
+Added Pin To Net: NetName=Net5V_2 Pin=C1-1
+Added Pin To Net: NetName=Net5V_2 Pin=C2-1
+Added Pin To Net: NetName=Net5V_2 Pin=C4-1
+Added Pin To Net: NetName=Net5V_2 Pin=D1-N
+Added Pin To Net: NetName=Net5V_2 Pin=ESP-WROOM-32-VIN
+Added Pin To Net: NetName=Net5V_2 Pin=ESP-WROOM-32-VIN
+Added Pin To Net: NetName=Net5V_2 Pin=R8-2
+Added Pin To Net: NetName=Net5V_2 Pin=RELAY-C1
+Added Net: Name=Net5V_2
+Added Pin To Net: NetName=NetD1_P Pin=D1-P
+Added Pin To Net: NetName=NetD1_P Pin=R3-1
+Added Net: Name=NetD1_P
+Added Pin To Net: NetName=NetESP-WROOM-32_32 Pin=ESP-WROOM-32-32
+Added Pin To Net: NetName=NetESP-WROOM-32_32 Pin=ESP-WROOM-32-32
+Added Pin To Net: NetName=NetESP-WROOM-32_32 Pin=R7-1
+Added Net: Name=NetESP-WROOM-32_32
+Added Pin To Net: NetName=Netplug_1 Pin=plug-1
+Added Pin To Net: NetName=Netplug_1 Pin=RELAY-COM2
+Added Net: Name=Netplug_1
+Added Pin To Net: NetName=Netplug_2 Pin=plug-2
+Added Pin To Net: NetName=Netplug_2 Pin=RELAY-A
+Added Net: Name=Netplug_2
+Added Class: Name=IronDoorControl
+Added Room: Name=IronDoorControl

@@ -4,6 +4,8 @@
 #include <Wire.h>
 #include <SH1106Wire.h>
 
+#include "ArduinoJson.h"
+
 #define IPin 35// I analog pin39
 #define VPin 34// V analog pin36
 #define SRPin 33// SR-501 pin33
@@ -32,11 +34,13 @@ const char* ssid = "dlink-7730";
 const char* password = "135791113";
 String IP, MAC;
 
+String APIKEY = "5d129a99-2533-47bd-acca-71c22d4733d3";
+
 SH1106Wire display(OLEDAddress, SDA, SCL);
 float IreadValue, VreadValue, ImaxValue, VmaxValue, IminValue, VminValue, DataCount,  count, CurrentStatus;
 float Iresult, Vresult, Irms, Vrms, ITotalData, VTotalData, IAvgData, VAvgData, CCVIrms, S, Presult, PCorrectionValue, PF;
 uint32_t start_time, FirstPage, SecondPage;
-String OLEDI, OLEDV, OLEDRms, OLEDS, OLEDPF;
+String OLEDI, OLEDV, OLEDRms, OLEDS, OLEDPF, Inf, ControlTypeOLED, RelayStausOLED;
 int SRStatus, AfterSRStatus;
 
 double PmaxValue, PminValue, PreadValue;
@@ -45,13 +49,7 @@ float PreadValueForI, PreadValueForV;
 
 float PreadValueForImax, PreadValueForImin, PreadValueForVmax, PreadValueForVmin;
 
-int Relay(){
-  if(digitalRead(ButtonTwo) == HIGH){
-    digitalWrite(RelayControl, HIGH);
-  }else{
-    digitalWrite(RelayControl, LOW);
-  }
-}
+
 
 float PageOne(float CCVIrms, float Vrms){// 電流 電壓 顯示 副程式
   OLEDRms = String("rms");
@@ -246,6 +244,111 @@ float RMS() {
 
 }*/
 
+int SeverRelayStatus(){
+    Inf = "http://120.126.8.126/api/switch/" + APIKEY + "?api_token=60kSeSf78sXjr0W9AtZoxMC9vIj1gzZP8GcdtHtTIaELm7PteocrYzBgjFVD";
+    HTTPClient http;// Declare object of class HTTPClient
+    //http.begin("http://120.126.8.126/api/switch/07aaab96-b507-4afc-9d1a-3175dd653d08?api_token=60kSeSf78sXjr0W9AtZoxMC9vIj1gzZP8GcdtHtTIaELm7PteocrYzBgjFVD");
+    http.begin(Inf);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");  //Specify content-type header
+    int httpCode = http.GET();// Send the request
+    //Serial.println(http.getString());
+    String JSONMessage = {http.getString()}; // Original message
+    String JSONName = JSONMessage;
+    String JSONData = JSONMessage;
+    String SubstringJSONName = JSONName.substring(43, 49);// get item name
+    String SubstringJSONData = JSONData.substring(51, 52);// get item data
+    String DeviceStatus = SubstringJSONName + String(":") + SubstringJSONData;// remix item name and data
+    if(SubstringJSONData == "0"){
+      return 0;
+    }else if(SubstringJSONData == "1"){
+      return 1;
+    }else{
+      
+    }
+    //Serial.println(DeviceStatus);
+}
+
+int Relay(){
+  
+  int ButtonOneStatus = digitalRead(ButtonOne);
+  int ButtonTwoStatus = digitalRead(ButtonTwo);
+  if(ButtonOneStatus == 0 && ButtonTwoStatus == 0){// 網路控制
+    if(SeverRelayStatus() == 0){// 網路關閉繼電器
+      digitalWrite(RelayControl, HIGH);
+      LEDOn(GLED);
+      LEDOff(YLED);
+      LEDOff(RLED);
+    }else if(SeverRelayStatus() == 1){// 網路開啟繼電器
+      digitalWrite(RelayControl, LOW);
+      LEDOff(GLED);
+      LEDOn(YLED);
+      LEDOff(RLED);
+    }else{// 異常
+      digitalWrite(RelayControl, HIGH);
+      LEDOff(GLED);
+      LEDOff(YLED);
+      LEDOn(RLED);
+    }
+  }else if(ButtonOneStatus == 1){// 本地控制
+    int ButtonTwoStatus = digitalRead(ButtonTwo);
+    if(ButtonTwoStatus == 1){// 開啟電器
+      digitalWrite(RelayControl, LOW);
+      LEDOff(GLED);
+      LEDOn(YLED);
+      LEDOff(RLED);
+    }else if(ButtonTwoStatus == 0){// 關閉繼電器
+      digitalWrite(RelayControl, HIGH);
+      LEDOn(GLED);
+      LEDOff(YLED);
+      LEDOff(RLED);
+    }else{// 異常
+      LEDOff(GLED);
+      LEDOff(YLED);
+      LEDOn(RLED);
+    }
+  }else{}
+}
+
+int OLEDRelayStatus(){
+  display.setFont(ArialMT_Plain_24);//24 16 8
+  int ButtonOneStatus = digitalRead(ButtonOne);
+  int ButtonTwoStatus = digitalRead(ButtonTwo);
+  // 控制方式
+  if(ButtonOneStatus == 0){
+    ControlTypeOLED = "Wi-Fi";
+    if(SeverRelayStatus() == 0){
+      RelayStausOLED = "OFF";
+    }else if(SeverRelayStatus() == 1){
+      RelayStausOLED = "ON";
+    }else{
+      RelayStausOLED = "ERROR";
+    }
+  }else if(ButtonOneStatus == 1){
+    ControlTypeOLED = "Local";
+    if(ButtonTwoStatus == 0){
+      RelayStausOLED = "OFF";
+    }else if(ButtonTwoStatus == 1){
+      RelayStausOLED = "ON";
+    }else{
+      RelayStausOLED = "ERROR";
+    }
+  }else{}
+
+  display.clear(); // clearing the display
+  display.drawString(OLEDItemX, OLEDItemY, ControlTypeOLED);
+  display.drawString(OLEDDataX, OLEDDataY, RelayStausOLED);
+  display.display();  
+}
+
+int LEDOn(int LEDOnStatus){
+  digitalWrite(LEDOnStatus, HIGH);
+}
+
+int LEDOff(int LEDOffStatus){
+  digitalWrite(LEDOffStatus, LOW);
+}
+
+
 void setup() {
   Serial.begin(9600);
   display.init();
@@ -286,8 +389,9 @@ void setup() {
 void loop() {
   delay(500);
   if(WiFi.status()== WL_CONNECTED){   //Check WiFi connection status
-    RMS();
-    //Relay();
+    //RMS();
+    Relay();
+    OLEDRelayStatus();
     //SR();
     //int STATUS = digitalRead(33);
     //Serial.println(STATUS);

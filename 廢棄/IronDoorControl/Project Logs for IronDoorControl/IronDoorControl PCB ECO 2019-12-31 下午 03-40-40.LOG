@@ -1,0 +1,11 @@
+Removed Pin From Net: NetName=Net5V_1 Pin=C1-1
+Removed Pin From Net: NetName=Net2N222_3 Pin=C1-2
+Removed Pin From Net: NetName=Net5V_1 Pin=C2-1
+Removed Pin From Net: NetName=Net2N222_3 Pin=C2-2
+Removed Pin From Net: NetName=Net5V_1 Pin=C3-1
+Removed Pin From Net: NetName=Net2N222_3 Pin=C3-2
+Removed Member From Class: ClassName=IronDoorControl Member=C1
+Removed Member From Class: ClassName=IronDoorControl Member=C1
+Removed Member From Class: ClassName=IronDoorControl Member=C3
+Change Component Designator: OldDesignator=R6 NewDesignator=R3
+Added Room: Name=IronDoorControl

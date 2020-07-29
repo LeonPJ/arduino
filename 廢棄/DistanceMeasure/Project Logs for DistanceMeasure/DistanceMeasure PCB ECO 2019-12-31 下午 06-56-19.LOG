@@ -1,0 +1,54 @@
+Added Component: Designator=D1(DIODE4MMUP)
+Added Component: Designator=D2(DIODE4MMUP)
+Added Component: Designator=D3(DIODE4MMUP)
+Added Component: Designator=HC-SR04(HC-SR04)
+Added Component: Designator=nodemcu(nodemcu)
+Added Component: Designator=R1(RES0.4)
+Added Component: Designator=R2(RES0.4)
+Added Component: Designator=R3(RES0.4)
+Added Pin To Net: NetName=NetD1_A Pin=D1-P
+Added Pin To Net: NetName=NetD1_A Pin=R1-2
+Added Net: Name=NetD1_A
+Added Pin To Net: NetName=NetD1_K Pin=D1-N
+Added Pin To Net: NetName=NetD1_K Pin=D2-N
+Added Pin To Net: NetName=NetD1_K Pin=D3-N
+Added Pin To Net: NetName=NetD1_K Pin=HC-SR04-Gnd
+Added Pin To Net: NetName=NetD1_K Pin=HC-SR04-Gnd
+Added Pin To Net: NetName=NetD1_K Pin=nodemcu-Gc
+Added Pin To Net: NetName=NetD1_K Pin=nodemcu-Gc
+Added Net: Name=NetD1_K
+Added Pin To Net: NetName=NetD2_A Pin=D2-P
+Added Pin To Net: NetName=NetD2_A Pin=R2-2
+Added Net: Name=NetD2_A
+Added Pin To Net: NetName=NetD3_A Pin=D3-P
+Added Pin To Net: NetName=NetD3_A Pin=R3-2
+Added Net: Name=NetD3_A
+Added Pin To Net: NetName=NetHC-SR04_Echo Pin=HC-SR04-Echo
+Added Pin To Net: NetName=NetHC-SR04_Echo Pin=HC-SR04-Echo
+Added Pin To Net: NetName=NetHC-SR04_Echo Pin=nodemcu-D7
+Added Pin To Net: NetName=NetHC-SR04_Echo Pin=nodemcu-D7
+Added Net: Name=NetHC-SR04_Echo
+Added Pin To Net: NetName=NetHC-SR04_Trig Pin=HC-SR04-Trig
+Added Pin To Net: NetName=NetHC-SR04_Trig Pin=HC-SR04-Trig
+Added Pin To Net: NetName=NetHC-SR04_Trig Pin=nodemcu-D6
+Added Pin To Net: NetName=NetHC-SR04_Trig Pin=nodemcu-D6
+Added Net: Name=NetHC-SR04_Trig
+Added Pin To Net: NetName=NetHC-SR04_Vcc Pin=HC-SR04-Vcc
+Added Pin To Net: NetName=NetHC-SR04_Vcc Pin=HC-SR04-Vcc
+Added Pin To Net: NetName=NetHC-SR04_Vcc Pin=nodemcu-Vin
+Added Pin To Net: NetName=NetHC-SR04_Vcc Pin=nodemcu-Vin
+Added Net: Name=NetHC-SR04_Vcc
+Added Pin To Net: NetName=Netnodemcu_D1 Pin=nodemcu-D1
+Added Pin To Net: NetName=Netnodemcu_D1 Pin=nodemcu-D1
+Added Pin To Net: NetName=Netnodemcu_D1 Pin=R1-1
+Added Net: Name=Netnodemcu_D1
+Added Pin To Net: NetName=Netnodemcu_D2 Pin=nodemcu-D2
+Added Pin To Net: NetName=Netnodemcu_D2 Pin=nodemcu-D2
+Added Pin To Net: NetName=Netnodemcu_D2 Pin=R2-1
+Added Net: Name=Netnodemcu_D2
+Added Pin To Net: NetName=Netnodemcu_D3 Pin=nodemcu-D3
+Added Pin To Net: NetName=Netnodemcu_D3 Pin=nodemcu-D3
+Added Pin To Net: NetName=Netnodemcu_D3 Pin=R3-1
+Added Net: Name=Netnodemcu_D3
+Added Class: Name=DistanceMeasure
+Added Room: Name=DistanceMeasure

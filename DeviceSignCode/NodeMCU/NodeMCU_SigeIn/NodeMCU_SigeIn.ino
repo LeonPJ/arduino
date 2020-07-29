@@ -44,7 +44,7 @@ void loop() {
     }
     const char * data = parsed["data"]; // get api key
     Serial.println(data);
-    Serial.println(); 
+    Serial.println(); */
  /*}else{
     Serial.println("Error in WiFi connection");   
  }*/

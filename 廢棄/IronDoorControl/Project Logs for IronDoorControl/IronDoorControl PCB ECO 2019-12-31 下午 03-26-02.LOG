@@ -1,0 +1,9 @@
+Added Component: Designator=fuse(FUSE20mm)
+Added Pin To Net: NetName=Netfuse_1 Pin=fuse-1
+Added Pin To Net: NetName=Netfuse_1 Pin=RELAY-COM2
+Added Net: Name=Netfuse_1
+Added Pin To Net: NetName=Netfuse_2 Pin=fuse-2
+Added Pin To Net: NetName=Netfuse_2 Pin=plug-1
+Added Net: Name=Netfuse_2
+Added Member To Class: ClassName=IronDoorControl Member=Component fuse FUSE20mm
+Added Room: Name=IronDoorControl

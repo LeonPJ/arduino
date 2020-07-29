@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=Net2N222_3 Pin=5V-1
+Removed Pin From Net: NetName=Net5V_2 Pin=5V-2
+Change Component DesignItemId : Designator=5V Old DesignItemId=WhiteMos New DesignItemId=BigGreenMos
+Change Component Footprint: Designator=5V Old Footprint=WhiteMos New Footprint=BigGreenMos
+Change Component Comment : Designator=5V Old Comment=WhiteMos New Comment=BigGreenMos
+Added Pin To Net: NetName=Net5V_2 Pin=5V-1
+Added Pin To Net: NetName=Net2N222_3 Pin=5V-2
+Change Net Name : Old Net Name=Net5V_2 New Net Name=Net5V_1
+Added Room: Name=IronDoorControl

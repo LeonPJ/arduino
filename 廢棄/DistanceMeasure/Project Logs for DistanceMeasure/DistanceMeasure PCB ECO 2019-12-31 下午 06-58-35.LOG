@@ -1,0 +1,5 @@
+Added Component: Designator=P1(LittleGreenMos)
+Added Pin To Net: NetName=NetHC-SR04_Vcc Pin=P1-1
+Added Pin To Net: NetName=NetD1_K Pin=P1-2
+Added Member To Class: ClassName=DistanceMeasure Member=Component P1 LittleGreenMos
+Added Room: Name=DistanceMeasure

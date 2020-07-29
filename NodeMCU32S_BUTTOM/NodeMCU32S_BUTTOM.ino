@@ -5,7 +5,7 @@
 SH1106Wire display(0x3c, 21, 22); // SDA SCL
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   display.init();
   display.flipScreenVertically();
   display.setFont(ArialMT_Plain_24);//24 16 8
@@ -23,6 +23,11 @@ void loop() {
   display.drawString(0, 0, SBOneStatus);
   display.drawString(0, 24, SBTwoStatus);
   display.display();
+  Serial.print("B1: ");
+  Serial.println(SBOneStatus);
+  Serial.print("B2: ");
+  Serial.println(SBTwoStatus);
+  Serial.println("-------------------------");
   
   /*Serial.print("B1 status: ");
   Serial.println(digitalRead(15));
