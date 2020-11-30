@@ -3,6 +3,15 @@
 #define PVPin 34
 #define buckHside 18//PWM
 #define buckLside 19//PWM
+#define gpioM151 15
+#define gpioM141 2
+#define gpioM131 16
+#define gpioM51 17
+#define gpioM101 21
+#define gpioM91 3
+#define gpioM81 1
+#define gpioM71 22
+#define gpioM61 30
 #define voltageTwevel 3 //12v 電壓轉 3V
 #define voltageEight 2//8v 電壓轉 2V
 //#define voltageFifteen 15 //15v 電壓
@@ -24,8 +33,8 @@ int batteryState, returnBatteryState, PVState, retrunPVState;
 // setting PWM properties
 const int freq = 50000;// 設定頻率
 const int ledChannel = 0;
-const int resolution = 10;
-const int dutyCycle = 512;
+const int resolution = 12;
+const int dutyCycle = 596;
 
 float batteryVoltageFunc(){
   batteryVoltageSum = 0;
@@ -84,8 +93,18 @@ float ACandPVMeasure(){
 }
 
 int startBuck(){
-  ledcWrite(ledChannel, dutyCycle);// ledcWrite(腳位, 頻率)
+  //ledcWrite(ledChannel, dutyCycle);// ledcWrite(腳位, 頻率) PWM 腳位 gpio 19
   //Serial.println("打PWM");
+  digitalWrite(gpioM151, LOW);// gpio 15
+  digitalWrite(gpioM141, HIGH);// gpio 2
+  digitalWrite(gpioM131, LOW);// gpio 16
+  digitalWrite(gpioM51, HIGH);// gpio 17
+  digitalWrite(gpioM91, HIGH);// gpio 3
+  digitalWrite(gpioM81, HIGH);// gpio 1
+  digitalWrite(gpioM71, LOW);// gpio 22
+  digitalWrite(gpioM101, LOW);// gpio 30
+  digitalWrite(gpioM61, HIGH);// gpio 30
+  
 }
 
 void setup() {
@@ -93,6 +112,15 @@ void setup() {
   Serial.begin(9600);
   ledcSetup(ledChannel, freq, resolution);
   ledcAttachPin(buckHside, ledChannel);
+  pinMode(gpioM151, OUTPUT);
+  pinMode(gpioM141, OUTPUT);
+  pinMode(gpioM131, OUTPUT);
+  pinMode(gpioM51, OUTPUT);
+  pinMode(gpioM101, OUTPUT);
+  pinMode(gpioM91, OUTPUT);
+  pinMode(gpioM81, OUTPUT);
+  pinMode(gpioM71, OUTPUT);
+  pinMode(gpioM61, OUTPUT);
 }
 
 void loop() {
