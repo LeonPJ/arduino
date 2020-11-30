@@ -102,7 +102,7 @@ int startBuck(){
   digitalWrite(gpioM91, HIGH);// gpio 3
   digitalWrite(gpioM81, HIGH);// gpio 1
   digitalWrite(gpioM71, LOW);// gpio 22
-  digitalWrite(gpioM101, LOW);// gpio 30
+  digitalWrite(gpioM101, LOW);// gpio 21
   digitalWrite(gpioM61, HIGH);// gpio 30
   
 }
