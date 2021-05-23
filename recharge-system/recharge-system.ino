@@ -1,7 +1,7 @@
 #define batteryPin 32
 #define ACPin 35
 #define PVPin 34
-#define IPin 33
+#define IPVPin 33
 #define buckHside 18//PWM
 #define buckLside 19//PWM
 #define gpioM151 15
@@ -64,6 +64,10 @@ const int dutyShutdown = 0;
 
   float pAndO_now = 0;
   float pAndO_anc = 0;
+  int batteryVoltageCheck = 0; //判斷電池電壓
+
+  float startBuckPCurrent = 0;
+  float startBuckPPrevious = 0;
 
 float batteryVoltageFunc(){// 電池電壓判斷
   batteryVoltageSum = 0;
@@ -77,16 +81,11 @@ float batteryVoltageFunc(){// 電池電壓判斷
 }
 
 int batteryJudge(float getBatteryVoltage){// 預先判斷太陽能是否足夠供電
-  //Serial.print("電壓: ");
-  //Serial.println(getBatteryVoltage);
-  if(getBatteryVoltage > 3){
-    ///Serial.println("條件不成立");
+  if(getBatteryVoltage > 3.06){
     batteryState = 0;// 條件不成立
-  }else if( 2 < getBatteryVoltage && getBatteryVoltage < 3){
-    //Serial.println("條件成立");
+  }else if( 1.6 < getBatteryVoltage && getBatteryVoltage <= 3.06){
     batteryState = 1;// 條件成立
   }else{
-    //Serial.println("沒有條件");
     batteryState = 2;// 沒有條件
   }
   return batteryState;
@@ -109,11 +108,13 @@ float judgementACVoltage(){// 市電是否足夠
 float ACandPVMeasure(){// 市電&太陽能電壓偵測
   ACVoltageSum = 0;
   PVVoltageSum = 0;
-  for(count = 0; count<=5; count++){// 取5次資料
+  for(count = 0; count<5; count++){// 取5次資料
     delayMicroseconds(57);
     ACVoltageValue = analogRead(ACPin);
+    //Serial.println(ACVoltageValue);
     delayMicroseconds(57);
     PVVoltageValue = analogRead(PVPin);
+    //Serial.println(PVVoltageValue);
     ACVoltageSum += ACVoltageValue;
     PVVoltageSum += PVVoltageValue;
   }
@@ -121,28 +122,49 @@ float ACandPVMeasure(){// 市電&太陽能電壓偵測
   PVVoltageAverage = PVVoltageSum/count;
   ACVoltageTrans = ((ACVoltageAverage * 3.3)/4095);
   PVVoltageTrans = ((PVVoltageAverage * 3.3)/4095);
-  
+
   /*判斷太陽能電壓是否足夠*/
-  if( 1.86 <= PVVoltageTrans && PVVoltageTrans <= 3.04){// 太陽能 成立
+  if(PVVoltageTrans >= 0.8 && PVVoltageTrans <= 2.91){// 太陽能 成立
     Serial.println("太陽能成立");
     startBuck();// 啟動降壓轉換器
-    }else if(0 < PVVoltageTrans && PVVoltageTrans <= 1.85){// 市電 成立
-      //Serial.println("市電成立");
+    }else if(PVVoltageTrans < 0.8 || PVVoltageTrans > 2.91){// 市電 成立
+      Serial.println("市電成立");
       //startFlyback();
-      }else if(PVVoltageTrans == 0 || PVVoltageTrans >= 3.05){// 太陽能電壓低於 0V 超過 22V
-        //Serial.println("太陽能 條件不成立");
-        }else{
-          // none
-        }
+      }else{
+        Serial.println("太陽能與市電 不成立");
+        // none
+      }
 }
 
 int startBuck(){// 啟動降壓轉換器
-  //ledcWrite(ledChannelOne, dutyCycleOne);// ledcWrite(腳位, 頻率) PWM 腳位 gpio 18
-  float changeDutyVoltage = ((analogRead(PVPin) * 3.3)/4095);
-  float newDuty = (1024 - (((changeDutyVoltage * (-0.212)) + 1.194) * 1024));
+  ledcWrite(ledChannelOne,dutyCycleOne );// ledcWrite(腳位, 頻率) PWM 腳位 gpio 18
+  
+  float startBuckPVVoltage = ((((analogRead(PVPin)*3.3)/4095)*14.218)+3.626);
+  float startBuckPVCurrent = ((((analogRead(IPVPin)*3.3)/4095)-2.5)*1000/100);
+  startBuckPCurrent = (startBuckPVVoltage * startBuckPVCurrent);
+  /*Serial.print("startBuckPVVoltage: ");
+  Serial.println(startBuckPVVoltage);
+  Serial.print("startBuckPVCurrent: ");
+  Serial.println(startBuckPVCurrent);
+  Serial.print("startBuckP: ");
+  Serial.println(startBuckPCurrent);
+  Serial.print("------------------------");*/
+
+  if(abs(startBuckPCurrent-startBuckPPrevious) > 0.5){
+    Serial.println("功率與上一次不同");
+    startBuckPPrevious = startBuckPCurrent;
+    
+    }else if(abs(startBuckPCurrent-startBuckPPrevious) < 0.5){
+      Serial.println("功率與上一次相同");
+      }else{
+        
+      }
+  
+  
+  /*float newDuty = (1024 - (((changeDutyVoltage * (-0.212)) + 1.194) * 1024));
   ledcWrite(ledChannelOne, newDuty);// ledcWrite(腳位, 頻率) PWM 腳位 gpio 18
   
-  delayMicroseconds(11);// 1000000 = 1
+  delayMicroseconds(11);// 1000000 = 1*/
   //ledcWrite(ledChannelTwo, dutyCycleTwo);// ledcWrite(腳位, 頻率) PWM 腳位 gpio 19
   //ledcWrite(ledChannelTwo, dutyShutdown);// ledcWrite(腳位, 頻率) PWM 腳位 gpio 19
   
@@ -156,7 +178,7 @@ int startBuck(){// 啟動降壓轉換器
   digitalWrite(gpioM101, LOW);// gpio 21
   digitalWrite(gpioM61, LOW);// gpio 23
   
-  mersureVpvnIpvn();// 偵測Vpvn 與 Ipvn
+  //mersureVpvnIpvn();// 偵測Vpvn 與 Ipvn
 }
 
 int startFlyback(){
@@ -189,7 +211,7 @@ float mersureVpvnIpvn(){// 偵測Vpvn 與 Ipvn
   delayMicroseconds(57);
   mPVVoltageValue = analogRead(PVPin);
   delayMicroseconds(57);
-  mIVoltageValue = analogRead(IPin);
+  mIVoltageValue = analogRead(IPVPin);
   mPVVoltageTrans = ((mPVVoltageValue * 3.3)/4095);
   mIVoltageTrans = ((mIVoltageValue * 3.3)/4095);
   Power_now = (mPVVoltageTrans * mIVoltageTrans);
@@ -304,17 +326,25 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   
-  returnBatteryVoltageFunc = batteryVoltageFunc();//讀取電池電壓
-  returnBatteryState = batteryJudge(returnBatteryVoltageFunc);// 成立回傳1，不成立回傳0
+  ///returnBatteryVoltageFunc = batteryVoltageFunc();// 讀取電池電壓
+  //returnBatteryState = batteryJudge(returnBatteryVoltageFunc);// 成立回傳1，不成立回傳0
   
-  if(returnBatteryState == 1){// 主要判斷太陽能是否供電
-    Serial.println("電池電壓 大於0 小於12");
-    ACandPVMeasure();// 市電&太陽能電壓偵測
-  }else if(returnBatteryState == 0){
-    Serial.println("電池電壓 大於12");
-  }else{
+  /*電池電壓判斷*/
+  /*if(returnBatteryVoltageFunc > 1.6 && returnBatteryVoltageFunc <= 3.06){// Vb < 8.4v , > 5v
+    Serial.println("電池電壓 小於 8.4v, 大於 5v");
+    batteryVoltageCheck = 1;
+  }else if(returnBatteryVoltageFunc < 1.6){// 沒有條件
     Serial.println("電池電壓 未量測到");
-  }
+    batteryVoltageCheck = 2;
+  }else{
+    Serial.println("電池電壓 大於 8.4v");
+    batteryVoltageCheck = 3;
+  }*/
+
+  ///if(batteryVoltageCheck == 1){
+    ACandPVMeasure();// 市電&太陽能電壓偵測
+  ///}
+  
   //ledcWrite(ledChannelOne, dutyCycleTwo);// gpio 18
   //else if(returnBatteryState == 0){
     //if(judgementACVoltage() == 1){
